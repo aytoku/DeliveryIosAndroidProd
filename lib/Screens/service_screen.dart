@@ -284,7 +284,7 @@ class ServiceScreenState extends State<ServiceScreen> {
                                 }),
                               ));
                         }
-                        return Center(child: CircularProgressIndicator());
+                        return Center(child: Container());
                       },
                     ),
                   ],

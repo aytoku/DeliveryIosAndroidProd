@@ -81,6 +81,9 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
     List<Widget> restaurantList = [];
     int i = 0;
     GlobalKey<CartItemsQuantityState> cartItemsQuantityKey = new GlobalKey();
+    if(records_items == null){
+      return Container();
+    }
     records_items.forEach((OrdersStoryModelItem ordersStoryModelItem) {
       var format = new DateFormat('HH:mm, dd-MM-yy');
       var date = new DateTime.fromMicrosecondsSinceEpoch(
@@ -117,9 +120,9 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(12),
-          topRight: const Radius.circular(12),
-        )),
+              topLeft: const Radius.circular(12),
+              topRight: const Radius.circular(12),
+            )),
         context: context,
         builder: (context) {
           return Container(
@@ -140,9 +143,9 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(0),
-          topRight: const Radius.circular(0),
-        )),
+              topLeft: const Radius.circular(0),
+              topRight: const Radius.circular(0),
+            )),
         context: context,
         builder: (context) {
           return Container(
@@ -177,7 +180,7 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
                       style: TextStyle(fontSize: 17),
                     ),
                   ),
-                  Row( 
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Padding(

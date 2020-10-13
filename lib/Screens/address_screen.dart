@@ -447,8 +447,9 @@ class PageState extends State<PageScreen> {
                               comment: takeAwayScreenKey.currentState.comment,
                               cartDataModel: currentUser.cartDataModel,
                               restaurantAddress: takeAwayScreenKey.currentState.destinationPointsSelectorStateKey.currentState.selectedDestinationPoint,
+                              without_delivery: true,
                               restaurant: restaurant);
-                          createOrderTakeAway.sendData();
+                          await createOrderTakeAway.sendData();
                         }
                         else{
                           print('All go po pantsu');

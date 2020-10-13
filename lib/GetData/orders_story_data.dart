@@ -22,5 +22,6 @@ Future<OrdersStoryModel> loadOrdersStoryModel() async {
     print('Request failed with status: ${response.statusCode}.');
   }
   print(response.body);
+  print(response.statusCode);
   return ordersStoryModel;
 }

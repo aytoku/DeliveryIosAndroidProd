@@ -171,7 +171,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
         builder: (context) {
           if(food.comment != "" && food.comment != null){
             return Container(
-              height: 500,
+              height: 520,
               child: _buildBottomNavigationMenu(food, cartItemsQuantityKey),
               decoration: BoxDecoration(
                   color: Theme.of(context).canvasColor,
@@ -258,7 +258,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     InkWell(
                       child: Container(
                         width: MediaQuery.of(context).size.width,
-                        child: Padding( 
+                        child: Padding(
                           padding: EdgeInsets.only(top: 20, bottom: 20),
                           child: Center(
                             child: Text(

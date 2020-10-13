@@ -102,6 +102,9 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
   List<Widget> _buildListItems(){
     double totalPrice = ordersStoryModelItem.tariff.totalPrice.toDouble();
     List<Widget> result = new List<Widget>();
+    if(ordersStoryModelItem.products == null){
+      return List<Container>();
+    }
     ordersStoryModelItem.products.forEach((product) {
       if(product.selectedVariant != null && product.selectedVariant.price != null){
         totalPrice += product.number * (product.price + product.selectedVariant.price);
@@ -328,105 +331,105 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
     // TODO: implement build
     return Scaffold(
         body: Column(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(top: 30, bottom: 10),
-          child: Row(
-            children: <Widget>[
-              Flexible(
-                flex: 1,
-                child: InkWell(
-                  child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Container(
-                          height: 40,
-                          width: 60,
-                          child: Padding(
-                            padding:
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 30, bottom: 10),
+              child: Row(
+                children: <Widget>[
+                  Flexible(
+                    flex: 1,
+                    child: InkWell(
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                              height: 40,
+                              width: 60,
+                              child: Padding(
+                                padding:
                                 EdgeInsets.only(top: 12, bottom: 12, right: 10),
-                            child:  SvgPicture.asset(
-                                'assets/svg_images/arrow_left.svg'),
-                          ))),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-              Flexible(
-                flex: 6,
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 40),
-                    child: Text(
-                      "Детали заказа",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF3F3F3F)),
+                                child:  SvgPicture.asset(
+                                    'assets/svg_images/arrow_left.svg'),
+                              ))),
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                     ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ),
-        Divider(height: 1.0, color: Color(0xFFF5F5F5)),
-        Stack(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 15, top: 15, right: 0),
-                child: Text(
-                  (ordersStoryModelItem.store != null)
-                      ? ordersStoryModelItem.store.name
-                      : 'Пусто',
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF3F3F3F),
-                      fontWeight: FontWeight.bold),
-                ),
+                  Flexible(
+                    flex: 6,
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 40),
+                        child: Text(
+                          "Детали заказа",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF3F3F3F)),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
             ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 15, top: 35),
-                child: Text(
-                  format.format(DateTime.fromMillisecondsSinceEpoch( ordersStoryModelItem.created_at_unix * 1000)),
-                  style: TextStyle(fontSize: 12, color: Color(0xFFB0B0B0)),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Padding(
-                padding: EdgeInsets.only(left: 170, top: 15, right: 10),
-                child: RichText(
-                  textAlign: TextAlign.start,
-                  maxLines: 2,
-                  text: TextSpan(
-                      text: 'Статус заказа: ',
+            Divider(height: 1.0, color: Color(0xFFF5F5F5)),
+            Stack(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 15, top: 15, right: 0),
+                    child: Text(
+                      (ordersStoryModelItem.store != null)
+                          ? ordersStoryModelItem.store.name
+                          : 'Пусто',
                       style: TextStyle(
                           fontSize: 14,
                           color: Color(0xFF3F3F3F),
                           fontWeight: FontWeight.bold),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: ordersStoryModelItem.state_title + '\n',
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 15, top: 35),
+                    child: Text(
+                      format.format(DateTime.fromMillisecondsSinceEpoch( ordersStoryModelItem.created_at_unix * 1000)),
+                      style: TextStyle(fontSize: 12, color: Color(0xFFB0B0B0)),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 170, top: 15, right: 10),
+                    child: RichText(
+                      textAlign: TextAlign.start,
+                      maxLines: 2,
+                      text: TextSpan(
+                          text: 'Статус заказа: ',
                           style: TextStyle(
                               fontSize: 14,
-                              color: Color(0xFFFE534F),
+                              color: Color(0xFF3F3F3F),
                               fontWeight: FontWeight.bold),
-                        ),
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: ordersStoryModelItem.state_title + '\n',
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(0xFFFE534F),
+                                  fontWeight: FontWeight.bold),
+                            ),
 //                          TextSpan(
 //                              text: 'Заберу с собой',
 //                              style: TextStyle(fontSize: 12, color: Color(0xFFB0B0B0))
 //                          )
-                      ]),
+                          ]),
+                    ),
+                  ),
                 ),
-              ),
-            ),
 //              Align(
 //                alignment: Alignment.centerRight,
 //                child: Container(
@@ -467,46 +470,46 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
 //                  child: Text('Заберу с собой', style: TextStyle(fontSize: 12, color: Color(0xFFB0B0B0)),),
 //                ),
 //              ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 15, top: 70),
-                child: Text(
-                  'Адрес заведения',
-                  style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF3F3F3F),
-                      fontWeight: FontWeight.bold),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 15, top: 70),
+                    child: Text(
+                      'Адрес заведения',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF3F3F3F),
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 15, top: 90, bottom: 10),
-                child: Text(
-                  (ordersStoryModelItem.store != null)
-                      ? ordersStoryModelItem.routes[0].street + ' ' +
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 15, top: 90, bottom: 10),
+                    child: Text(
+                      (ordersStoryModelItem.store != null)
+                          ? ordersStoryModelItem.routes[0].street + ' ' +
                           ordersStoryModelItem.routes[0].house
-                      : 'Пусто',
-                  style: TextStyle(fontSize: 12, color: Color(0xFFB0B0B0)),
+                          : 'Пусто',
+                      style: TextStyle(fontSize: 12, color: Color(0xFFB0B0B0)),
+                    ),
+                  ),
                 ),
+              ],
+            ),
+            Container(
+              height: 30,
+              color: Color(0xF3F3F3F3),
+            ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: _buildListItems(),
               ),
             ),
-          ],
-        ),
-        Container(
-          height: 30,
-          color: Color(0xF3F3F3F3),
-        ),
-        Expanded(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: _buildListItems(),
-          ),
-        ),
-        Stack(
-          children: <Widget>[
+            Stack(
+              children: <Widget>[
 //              Padding(
 //                  padding: EdgeInsets.only(left: 20, bottom: 20),
 //                  child: GestureDetector(
@@ -523,94 +526,94 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
 //                    ),
 //                  )
 //              ),
-            Center(
-              child: Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 20, right: 0),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: (!state_array.contains(ordersStoryModelItem.state)) ? GestureDetector(
-                      child: Container(
-                          height: 50,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFFE534F),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Повторить заказ',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )),
-                      onTap: () async {
-                        if (await Internet.checkConnection()) {
-                          Records restaurant = ordersStoryModelItem.store;
-                          currentUser.cartDataModel.cart.clear();
-                          ordersStoryModelItem.products
-                              .forEach((FoodRecordsStory element) {
-                            FoodRecords foodItem =
+                Center(
+                  child: Padding(
+                      padding: EdgeInsets.only(top: 20, bottom: 20, right: 0),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: (!state_array.contains(ordersStoryModelItem.state)) ? GestureDetector(
+                          child: Container(
+                              height: 50,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFFE534F),
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Повторить заказ',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )),
+                          onTap: () async {
+                            if (await Internet.checkConnection()) {
+                              Records restaurant = ordersStoryModelItem.store;
+                              currentUser.cartDataModel.cart.clear();
+                              ordersStoryModelItem.products
+                                  .forEach((FoodRecordsStory element) {
+                                FoodRecords foodItem =
                                 FoodRecords.fromFoodRecordsStory(element);
-                            Order order = new Order(
-                                restaurant: restaurant,
-                                food: foodItem,
-                                date: DateTime.now().toString(),
-                                quantity: element.number,
-                                isSelected: false);
-                            currentUser.cartDataModel.cart.add(order);
-                          });
-                          Navigator.push(
-                            context,
-                            new MaterialPageRoute(builder: (context) {
-                              return new CartScreen(restaurant: restaurant);
-                            }),
-                          );
-                        } else {
-                          noConnection(context);
-                        }
-                      },
-                    ) : (!not_cancel_state.contains(ordersStoryModelItem.state)) ?  GestureDetector(
-                      child: Container(
-                          height: 50,
-                          width: 200,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFFE534F),
-                            borderRadius: BorderRadius.circular(50.0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Отменить',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          )),
-                      onTap: () async {
-                        if (await Internet.checkConnection()) {
+                                Order order = new Order(
+                                    restaurant: restaurant,
+                                    food: foodItem,
+                                    date: DateTime.now().toString(),
+                                    quantity: element.number,
+                                    isSelected: false);
+                                currentUser.cartDataModel.cart.add(order);
+                              });
+                              Navigator.push(
+                                context,
+                                new MaterialPageRoute(builder: (context) {
+                                  return new CartScreen(restaurant: restaurant);
+                                }),
+                              );
+                            } else {
+                              noConnection(context);
+                            }
+                          },
+                        ) : (!not_cancel_state.contains(ordersStoryModelItem.state)) ?  GestureDetector(
+                          child: Container(
+                              height: 50,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                color: Color(0xFFFE534F),
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Отменить',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )),
+                          onTap: () async {
+                            if (await Internet.checkConnection()) {
 //                          if(not_cancel_state.contains(ordersStoryModelItem.state)){
 //                            showNoCancelAlertDialog(context);
 //                            return;
 //                          }
-                          showAlertDialog(context);
-                          await loadOrderCancel(ordersStoryModelItem.uuid);
-                          homeScreenKey = new GlobalKey();
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) => HomeScreen()),
-                                  (Route<dynamic> route) => false);
-                        } else {
-                          noConnection(context);
-                        }
-                      },
-                    ): Container(),
-                  )),
+                              showAlertDialog(context);
+                              await loadOrderCancel(ordersStoryModelItem.uuid);
+                              homeScreenKey = new GlobalKey();
+                              Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => HomeScreen()),
+                                      (Route<dynamic> route) => false);
+                            } else {
+                              noConnection(context);
+                            }
+                          },
+                        ): Container(),
+                      )),
+                )
+              ],
             )
           ],
-        )
-      ],
-    ));
+        ));
   }
 }
