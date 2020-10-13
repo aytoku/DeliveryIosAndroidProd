@@ -52,8 +52,7 @@ class NameScreenState extends State<NameScreen> {
                         child: Text('Как вас зовут?',
                             style: TextStyle(
                                 fontSize: 19,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xB5B5B5B5))),
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ),
