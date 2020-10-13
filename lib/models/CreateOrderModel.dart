@@ -79,7 +79,7 @@ class CreateOrder {
         necessaryAddressData.destinationPoints[0].toJson()
       ],
       "payment_type": payment_type,
-      "service_uuid": "6b73e9e3-927b-453c-81c4-dfae818291f4",
+      "service_uuid": "833fc341-dbd8-4dcb-adff-fd22246756d1",
     });
     print(json);
     var response = await http.post(url, body: jsonEncode({
@@ -95,7 +95,7 @@ class CreateOrder {
         necessaryAddressData.destinationPoints[0].toJson()
       ],
       "payment_type": payment_type,
-      "service_uuid": "6b73e9e3-927b-453c-81c4-dfae818291f4",
+      "service_uuid": "833fc341-dbd8-4dcb-adff-fd22246756d1",
     }), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
@@ -108,6 +108,6 @@ class CreateOrder {
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
-    print(response.body);
+    print("PROD" + response.body);
   }
 }
