@@ -9,6 +9,9 @@ import 'package:flutter_app/models/order.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'auto_complete.dart';
+import 'auto_complete.dart';
+import 'auto_complete.dart';
+import 'auto_complete.dart';
 import 'home_screen.dart';
 
 
@@ -198,15 +201,15 @@ class PageState extends State<PageScreen> {
 //                    ),
 //                  ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Flexible(
-                        flex: 1,
+                      Container(
+                        padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.05),
                         child: SizedBox(
                           height: 40,
                           child: GestureDetector(
                             child: Padding(
-                              padding: EdgeInsets.only(left: 5, right: 5),
+                              padding: EdgeInsets.only(left: 0,
+                                  right: 0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius:
@@ -236,13 +239,15 @@ class PageState extends State<PageScreen> {
                           ),
                         ),
                       ),
-                      Flexible(
-                        flex: 1,
+                      Container(
+                        padding: EdgeInsets.only(
+                            right: MediaQuery.of(context).size.width * 0.05),
                         child: SizedBox(
                           height: 40,
                           child: GestureDetector(
                             child: Padding(
-                              padding: EdgeInsets.only(left: 5, right: 5),
+                              padding: EdgeInsets.only(left: 0,
+                                  right: 0),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius:
@@ -348,7 +353,7 @@ class PageState extends State<PageScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 8, left: 15, right: 15, top: 10),
+                padding: EdgeInsets.only(bottom: 20, left: 15, right: 15, top: 10),
                 child: FlatButton(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -364,7 +369,7 @@ class PageState extends State<PageScreen> {
                             child: Padding(
                               padding: EdgeInsets.all(10),
                               child: Text(
-                                (restaurant.order_preparation_time_second != null)? '${restaurant.order_preparation_time_second ~/ 60} мин' : '',
+                                '30-50 мин.',
                                 style: TextStyle(
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.w600,
@@ -394,7 +399,7 @@ class PageState extends State<PageScreen> {
                             child: Padding(
                               padding: EdgeInsets.all(10),
                               child: Text(
-                                  '${(totalPrice).toStringAsFixed(0)} \Р',
+                                  '${(totalPrice).toStringAsFixed(0)} \₽',
                                   style: TextStyle(
                                       fontSize: 14.0,
                                       fontWeight: FontWeight.w600,
@@ -412,8 +417,7 @@ class PageState extends State<PageScreen> {
                       left: 10, top: 10, right: 10, bottom: 10),
                   onPressed: () async {
                     if (await Internet.checkConnection()) {
-                      if (addressScreenKey.currentState.destinationPointsKey.currentState.searchTextField
-                          .textFieldConfiguration.controller.text.length >
+                      if (addressScreenKey.currentState.addressField.text.length >
                           0 || selectedPageId == 1) {
                         Center(
                           child: CircularProgressIndicator(),
@@ -421,10 +425,7 @@ class PageState extends State<PageScreen> {
                         showAlertDialog(context);
                         if(selectedPageId == 0 && addressScreenKey.currentState != null) {
                           CreateOrder createOrder = new CreateOrder(
-                            address: addressScreenKey.currentState
-                                .destinationPointsKey.currentState
-                                .searchTextField.textFieldConfiguration.controller
-                                .text,
+                            address: addressScreenKey.currentState.addressField.text,
                             restaurantAddress: addressScreenKey.currentState.destinationPointsSelectorStateKey.currentState.selectedDestinationPoint,
                             office: addressScreenKey.currentState.officeField
                                 .text,
@@ -444,7 +445,7 @@ class PageState extends State<PageScreen> {
                         } else if (takeAwayScreenKey.currentState != null) {
                           CreateOrderTakeAway createOrderTakeAway =
                           new CreateOrderTakeAway(
-                              comment: takeAwayScreenKey.currentState.comment,
+                              comment: (takeAwayScreenKey.currentState.status1) ? "Поем в заведении" : takeAwayScreenKey.currentState.comment,
                               cartDataModel: currentUser.cartDataModel,
                               restaurantAddress: takeAwayScreenKey.currentState.destinationPointsSelectorStateKey.currentState.selectedDestinationPoint,
                               without_delivery: true,
@@ -511,7 +512,7 @@ class AddressScreenState extends State<AddressScreen>
   GlobalKey<DestinationPointsSelectorState> destinationPointsSelectorStateKey =
   GlobalKey<DestinationPointsSelectorState>();
 
-  GlobalKey<AutoCompleteDemoState> destinationPointsKey = new GlobalKey();
+  GlobalKey<AutoCompleteDemoState> destinationPointsKey;
   bool _color;
 
   AddressScreenState(this.restaurant, this.myAddressesModel);
@@ -522,7 +523,10 @@ class AddressScreenState extends State<AddressScreen>
   @override
   void initState() {
     super.initState();
+    print('fagoti 2');
     _color = true;
+    destinationPointsKey = new GlobalKey();
+    autoComplete = new AutoComplete(destinationPointsKey, 'Введите адрес');
   }
 
   bool status1 = false;
@@ -535,10 +539,12 @@ class AddressScreenState extends State<AddressScreen>
   TextEditingController intercomField = new TextEditingController();
   TextEditingController entranceField = new TextEditingController();
   TextEditingController floorField = new TextEditingController();
+  TextEditingController addressField = new TextEditingController();
   TextField floorTextField;
   TextField intercomTextField;
   TextField entranceTextField;
   TextField officeTextField;
+  AutoComplete autoComplete;
 
   String addressName = '';
   int deliveryPrice = 0;
@@ -546,7 +552,7 @@ class AddressScreenState extends State<AddressScreen>
   List<MyAddressesModel> myAddressesModelList;
   MyAddressesModel myAddressesModel;
 
-  void _deleteButton(MyAddressesModel myAddressesModel) {
+  void _deleteButton(AutoComplete autoComplete) {
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -560,7 +566,7 @@ class AddressScreenState extends State<AddressScreen>
           return Container(
               height: MediaQuery.of(context).size.height * 0.8,
               child: Container(
-                child: _buildDeleteBottomNavigationMenu(myAddressesModel),
+                child: _buildDeleteBottomNavigationMenu(autoComplete),
                 decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
                     borderRadius: BorderRadius.only(
@@ -571,57 +577,92 @@ class AddressScreenState extends State<AddressScreen>
         });
   }
 
-  Column _buildDeleteBottomNavigationMenu(MyAddressesModel myAddressesModel) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(bottom: 0, right: 15, top: 10),
-          child: AutoComplete(destinationPointsKey, ''),
-        ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: EdgeInsets.only(left: 30, top: 370),
-            child: FlatButton(
-              child: Text(
-                "Далее",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold),
+  _buildDeleteBottomNavigationMenu(AutoComplete autoComplete) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(top: 7),
+                    child: Center(
+                      child: Container(
+                        width: 67,
+                        height: 7,
+                        decoration: BoxDecoration(
+                            color: Color(0xFFEBEAEF),
+                            borderRadius: BorderRadius.all(Radius.circular(11))),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(bottom: 0, right: 15),
+                      child: Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 15,
+                              top: 33,
+                              bottom: 0,
+                            ),
+                            child: SvgPicture.asset('assets/svg_images/mini_black_ellipse.svg'),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: 3,
+                              left: 25,
+                              bottom: 5,
+                            ),
+                            child: autoComplete,
+                          ),
+                        ],
+                      )),
+                  Padding(
+                    padding: EdgeInsets.only(top: 0),
+                    child: Divider(
+                      color: Color(0xFFEDEDED),
+                      height: 1,
+                      thickness: 1,
+                    ),
+                  ),
+                ],
               ),
-              color: Color(0xFFFE534F),
-              splashColor: Colors.redAccent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding:
-              EdgeInsets.only(left: 70, top: 20, right: 70, bottom: 20),
-              onPressed: () async {
-                if (await Internet.checkConnection()) {
-                  Navigator.push(
-                    context,
-                    new MaterialPageRoute(builder: (context) {
-                      myAddressesModel.type = MyAddressesType.home;
-                      myAddressesModel.address = destinationPointsKey
-                          .currentState
-                          .searchTextField
-                          .textFieldConfiguration
-                          .controller
-                          .text;
-                      return new AddressScreen(
-                          myAddressesModel: myAddressesModel);
-                    }),
-                  );
-                } else {
-                  noConnection(context);
-                }
-              },
             ),
           ),
-        )
-      ],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(left: 10, bottom: 15),
+              child: FlatButton(
+                child: Text(
+                  "Далее",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold),
+                ),
+                color: Color(0xFFFE534F),
+                splashColor: Colors.redAccent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                padding:
+                EdgeInsets.only(left: 100, top: 20, right: 100, bottom: 20),
+                onPressed: () async {
+                  addressField.text = destinationPointsKey.currentState
+                      .searchTextField.textFieldConfiguration.controller
+                      .text;
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -670,7 +711,23 @@ class AddressScreenState extends State<AddressScreen>
                   ],
                 ),
               ),
-              AutoComplete(destinationPointsKey, ''),
+              Padding(
+                  padding: EdgeInsets.only(left: 15, top: 5),
+                  child: Container(
+                    height: 40,
+                    child: TextField(
+                      controller: addressField,
+                      readOnly: true,
+                      onTap: (){
+                        _deleteButton(autoComplete);
+                      },
+                      focusNode: focusNode,
+                      decoration: new InputDecoration(
+                        border: InputBorder.none,
+                        counterText: '',
+                      ),
+                    ),
+                  )),
               Padding(
                 padding: EdgeInsets.only(left: 15, right: 15),
                 child: Divider(
@@ -845,7 +902,7 @@ class AddressScreenState extends State<AddressScreen>
               Padding(
                   padding: EdgeInsets.only(left: 15, bottom: 5),
                   child: Container(
-                    height: 20,
+                    height: 45,
                     child: TextField(
                       textCapitalization: TextCapitalization.sentences,
                       controller: commentField,
@@ -879,7 +936,7 @@ class AddressScreenState extends State<AddressScreen>
                 child: Row(
                   children: <Widget>[
                     Text(
-                      (restaurant.order_preparation_time_second != null)? '${restaurant.order_preparation_time_second ~/ 60} мин' : '',
+                      '30-50 мин.',
                       style: TextStyle(
                           color: Colors.black, fontSize: 13),
                     )
@@ -1089,6 +1146,7 @@ class TakeAwayState extends State<TakeAway>
   final Records restaurant;
   String name = '';
   bool _color;
+  bool status1 = false;
 
 
   TakeAwayState(this.restaurant);
@@ -1193,7 +1251,7 @@ class TakeAwayState extends State<TakeAway>
                 child: Row(
                   children: <Widget>[
                     Text(
-                      'Время ожидания',
+                      'Время готовки',
                       style: TextStyle(
                           color: Color(0xFFB0B0B0), fontSize: 13),
                     )
@@ -1212,6 +1270,43 @@ class TakeAwayState extends State<TakeAway>
                       ),
                     ),
                   )),
+              Padding(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                child: Divider(height: 1.0, color: Color(0xFFEDEDED)),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: 10, left: 15, right: 15, bottom: 10),
+                child: Row(
+                  mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Поем в заведении',
+                      style: TextStyle(
+                          color: Color(0xFF3F3F3F),
+                          fontSize: 15),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 0),
+                      child: FlutterSwitch(
+                        width: 55.0,
+                        height: 25.0,
+                        inactiveColor: Color(0xD6D6D6D6),
+                        activeColor: Colors.red,
+                        valueFontSize: 12.0,
+                        toggleSize: 18.0,
+                        value: status1,
+                        onToggle: (value) {
+                          setState(() {
+                            status1 = value;
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                ),
+              ),
               Container(
                 height: 145,
                 color: Color(0xFAFAFAFA),
@@ -1328,26 +1423,44 @@ class DestinationPointsSelectorState extends State<DestinationPointsSelector> {
 
   DestinationPointsSelectorState(this.destinationPointsList);
 
+  void initState() {
+    if(destinationPointsList.length > 0){
+      selectedDestinationPoint = destinationPointsList[0];
+    }
+  }
+
   Widget build(BuildContext context) {
     List<Widget> widgetsList = new List<Widget>();
     destinationPointsList.forEach((element) {
       widgetsList.add(
-        ListTile(
-          title: Text(
-            element.unrestricted_value,
-            style: TextStyle(color: Color(0xFF424242)),
-          ),
-          leading: Radio(
-            focusColor: Colors.red,
-            value: element,
-            groupValue: selectedDestinationPoint,
-            onChanged: (DestinationPoints value) {
-              setState(() {
-                selectedDestinationPoint = value;
-              });
-            },
-          ),
-        ),
+          Padding(
+            padding: EdgeInsets.only(right: 0),
+            child: ListTile(
+              contentPadding: EdgeInsets.only(right: 5),
+              title: GestureDetector(
+                child: Text(
+                  element.unrestricted_value,
+                  style: TextStyle(color: Color(0xFF424242)),
+                ),
+                onTap: (){
+                  setState(() {
+                    selectedDestinationPoint = element;
+                  });
+                },
+              ),
+              leading: Radio(
+                focusColor: Colors.red,
+                value: element,
+                groupValue: selectedDestinationPoint,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onChanged: (DestinationPoints value) {
+                  setState(() {
+                    selectedDestinationPoint = value;
+                  });
+                },
+              ),
+            ),
+          )
       );
     });
     return Container(

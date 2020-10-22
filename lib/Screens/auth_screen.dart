@@ -209,7 +209,7 @@ class _AuthScreenState extends State<AuthScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                  padding: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(bottom: 15),
                   child: Button(key: buttonStateKey, color: Color(0xF3F3F3F3),)
               ),
             ),

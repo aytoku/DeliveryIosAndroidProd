@@ -34,7 +34,7 @@ class NameScreenState extends State<NameScreen> {
                           width: 60,
                           child: Padding(
                             padding:
-                                EdgeInsets.only(top: 12, bottom: 12, right: 30),
+                            EdgeInsets.only(top: 12, bottom: 12, right: 30),
                             child: SvgPicture.asset(
                                 'assets/svg_images/arrow_left.svg'),
                           )))),
@@ -51,8 +51,9 @@ class NameScreenState extends State<NameScreen> {
                         padding: EdgeInsets.only(top: 0, bottom: 15),
                         child: Text('Как вас зовут?',
                             style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.bold)),
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                            )),
                       ),
                     ),
                   ),
@@ -60,7 +61,7 @@ class NameScreenState extends State<NameScreen> {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding:
-                          EdgeInsets.only(right: 30, left: 30, bottom: 100),
+                      EdgeInsets.only(right: 30, left: 30, bottom: 100),
                       child: Row(
                         children: <Widget>[
                           Flexible(
@@ -78,7 +79,7 @@ class NameScreenState extends State<NameScreen> {
                                     controller: nameFieldController,
                                     textAlign: TextAlign.start,
                                     textCapitalization:
-                                        TextCapitalization.sentences,
+                                    TextCapitalization.sentences,
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold),
@@ -147,11 +148,11 @@ class NameScreenState extends State<NameScreen> {
 //                                      .setUpFirebase();
                                   print(necessaryDataForAuth.name);
                                   homeScreenKey =
-                                      new GlobalKey<HomeScreenState>();
+                                  new GlobalKey<HomeScreenState>();
                                   Navigator.of(context).pushAndRemoveUntil(
                                       MaterialPageRoute(
                                           builder: (context) => HomeScreen()),
-                                      (Route<dynamic> route) => false);
+                                          (Route<dynamic> route) => false);
                                 } else {
                                   noConnection(context);
                                 }

@@ -124,23 +124,23 @@ class PaymentMethodSelectorState extends State<PaymentMethodSelector> {
   @override
   Widget build(BuildContext context) {
     return  Container(
-      height: 200,
-      child: ListView.builder(
-        itemCount: cardModelList.length + 1,
-        itemBuilder: (context, position) {
-          if(position >= cardModelList.length){
+        height: 200,
+        child: ListView.builder(
+          itemCount: cardModelList.length + 1,
+          itemBuilder: (context, position) {
+            if(position >= cardModelList.length){
+              return ListTile(
+                title: Text('Наличными'),
+                //leading: SvgPicture.asset('assets/svg_images/visa.svg'),
+                //trailing: position == selectedIndex ? SvgPicture.asset('assets/svg_images/selected_circle.svg') : SvgPicture.asset('assets/svg_images/circle.svg'),
+                onTap: (){
+                  setState(() {
+                    selectedIndex = position;
+                  });
+                },
+              );
+            }
             return ListTile(
-              title: Text('Наличными'),
-              //leading: SvgPicture.asset('assets/svg_images/visa.svg'),
-              //trailing: position == selectedIndex ? SvgPicture.asset('assets/svg_images/selected_circle.svg') : SvgPicture.asset('assets/svg_images/circle.svg'),
-              onTap: (){
-                setState(() {
-                  selectedIndex = position;
-                });
-              },
-            );
-          }
-          return ListTile(
               title: Text('${cardModelList[position].number.substring(cardModelList[position].number.length-4)}'),
               //leading: SvgPicture.asset('assets/svg_images/visa.svg'),
               //trailing: position == selectedIndex ? SvgPicture.asset('assets/svg_images/selected_circle.svg') : SvgPicture.asset('assets/svg_images/circle.svg'),
@@ -150,9 +150,9 @@ class PaymentMethodSelectorState extends State<PaymentMethodSelector> {
                   selectedIndex = position;
                 });
               },
-          );
-        },
-      )
+            );
+          },
+        )
     );
   }
 }

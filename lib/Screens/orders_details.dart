@@ -119,7 +119,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
         totalPrice += toppingsCost;
       }
       result.add(Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: EdgeInsets.only(top: 0),
           child: Column(
             children: <Widget>[
               Padding(
@@ -140,14 +140,82 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                       child: SvgPicture.asset(
                           'assets/svg_images/cross.svg'),
                     ),
-                    Expanded(
+                    (product.selectedVariant == null || product.toppings == null ||
+                        product.selectedVariant == null && product.toppings == null) ? Expanded(
                       child: SingleChildScrollView(
-                        child: Stack(
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 33.0),
+                          child: Column(
+                            children: <Widget>[
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  product.name,
+                                  style: TextStyle(
+                                      decoration: TextDecoration.none,
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF000000)),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                              (product.selectedVariant != null)
+                                  ? Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    product.selectedVariant .name,
+                                    style: TextStyle(
+                                        decoration: TextDecoration.none,
+                                        fontSize: 10.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF000000)),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ),
+                              )
+                                  : Text(''),
+                              (product.toppings != null)
+                                  ? Padding(
+                                padding: EdgeInsets.only(top: 15),
+                                child: Column(
+                                  children: List.generate(
+                                      product.toppings.length,
+                                          (index) => Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding:
+                                          EdgeInsets.only(bottom: 5, left: 2),
+                                          child: Text(
+                                            product.toppings[index]
+                                                .name,
+                                            style: TextStyle(
+                                                decoration:
+                                                TextDecoration.none,
+                                                fontSize: 10.0,
+                                                fontWeight:
+                                                FontWeight.bold,
+                                                color: Color(0xFF000000)),
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ),
+                                      )),
+                                ),
+                              )
+                                  : Text(''),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ) : Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: <Widget>[
                             Align(
                               alignment: Alignment.topLeft,
                               child: Padding(
-                                padding: EdgeInsets.only(top: 5, right: 0),
+                                padding: EdgeInsets.only(top: 10, right: 0),
                                 child: Text(
                                   product.name,
                                   style: TextStyle(
@@ -163,7 +231,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                 ? Align(
                               alignment: Alignment.topLeft,
                               child: Padding(
-                                padding: EdgeInsets.only(top: 15),
+                                padding: EdgeInsets.only(top: 5),
                                 child: Text(
                                   product.selectedVariant .name,
                                   style: TextStyle(
@@ -178,7 +246,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                                 : Text(''),
                             (product.toppings != null)
                                 ? Padding(
-                              padding: EdgeInsets.only(top: 30),
+                              padding: EdgeInsets.only(top: 5),
                               child: Column(
                                 children: List.generate(
                                     product.toppings.length,
@@ -213,7 +281,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                       child: Text(
                         '${(product.selectedVariant != null  && product.selectedVariant.price != null) ?
                         (product.number * (product.price + product.selectedVariant.price) + toppingsCost).toStringAsFixed(0) :
-                        (product.number * product.price + toppingsCost).toStringAsFixed(0)} \Р',
+                        (product.number * product.price + toppingsCost).toStringAsFixed(0)} \₽',
                         style: TextStyle(
                             color: Color(0xFFB0B0B0), fontSize: 14),
                       ),
@@ -222,7 +290,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.only(top: 0),
                 child: Divider(height: 1.0, color: Color(0xFFF5F5F5)),
               ),
             ],
@@ -231,7 +299,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
 
     result.add(Column(
       children: [
-        Padding(
+        (ordersStoryModelItem.own_delivery != null && ordersStoryModelItem.own_delivery) ? Container(height: 0) : Padding(
             padding: EdgeInsets.only(left: 15, top: 10, bottom: 10, right: 15),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -246,7 +314,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
                 Padding(
                   padding: EdgeInsets.only(),
                   child: Text(
-                    (ordersStoryModelItem.tariff.totalPrice - ordersStoryModelItem.tariff.bonusPayment).toString() + ' \Р',
+                    (ordersStoryModelItem.tariff.totalPrice - ordersStoryModelItem.tariff.bonusPayment).toString() + ' \₽',
                     style: TextStyle(
                         color: Color(0xFFB0B0B0), fontSize: 14),
                   ),
@@ -269,7 +337,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(right: 15, bottom: 20),
-              child: Text('${totalPrice.toStringAsFixed(0)} \Р',
+              child: Text('${totalPrice.toStringAsFixed(0)} \₽',
                   style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,

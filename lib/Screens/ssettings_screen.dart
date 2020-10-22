@@ -27,14 +27,14 @@ class SettingsScreenState extends State<SettingsScreen>{
                   child: Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
-                        padding: EdgeInsets.only(left: 15, top: 50),
-                        child: Container(
-                            width: 20,
-                            height: 20,
-                            child: Center(
-                              child: Image(image: AssetImage('assets/images/arrow_left.png')),
-                            )
-                        )
+                          padding: EdgeInsets.only(left: 15, top: 50),
+                          child: Container(
+                              width: 20,
+                              height: 20,
+                              child: Center(
+                                child: Image(image: AssetImage('assets/images/arrow_left.png')),
+                              )
+                          )
                       )
                   ),
                   onTap: (){

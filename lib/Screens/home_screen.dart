@@ -76,8 +76,18 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
   }
 
   _buildNearlyRestaurant() {
+    DateTime now = DateTime.now();
+    int currentTime = now.hour*60+now.minute;
+    print((currentTime/60).toString() + 'KANTENT');
+    print((now.hour).toString() + 'KANTENT');
+    print((now.minute).toString() + 'KANTENT');
+    int dayNumber  = now.weekday-1;
     List<Widget> restaurantList = [];
     records_items.forEach((Records restaurant) {
+      int work_beginning = restaurant.work_schedule[dayNumber].work_beginning;
+      int work_ending = restaurant.work_schedule[dayNumber].work_ending;
+      bool day_off = restaurant.work_schedule[dayNumber].day_off;
+      bool available = restaurant.available != null ? restaurant.available : true;
       restaurantList.add(GestureDetector(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -94,20 +104,108 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                 border: Border.all(width: 1.0, color: Colors.grey[200])),
             child: Column(
               children: <Widget>[
-                ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15),
-                        bottomLeft: Radius.circular(0),
-                        bottomRight: Radius.circular(0)),
-                    child: Hero(
-                        tag: restaurant.uuid,
-                        child: Image.network(
-                          getImage(restaurant.image),
-                          height: 200.0,
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.cover,
-                        ))),
+                ( day_off ||
+                    !available ||
+                    !(currentTime >= work_beginning && currentTime < work_ending)) ? Stack(
+                  children: [
+                    ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0)),
+                        child: Hero(
+                            tag: restaurant.uuid,
+                            child: ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                  Colors.grey,
+                                  BlendMode.saturation
+                              ),
+                              child: Image.network(
+                                getImage(restaurant.image),
+                                height: 200.0,
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.cover,
+                              ),
+                            ))),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 150.0),
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          height: 32,
+                          width: 250,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20)
+                              ),
+                              color: Colors.black.withOpacity(0.5)
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Text(
+                                "Заведение откроется в ${(work_beginning / 60).toStringAsFixed(0)} часов",
+                                style: TextStyle(
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ) : Stack(
+                  children: [
+                    ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
+                            bottomLeft: Radius.circular(0),
+                            bottomRight: Radius.circular(0)),
+                        child:  Hero(
+                            tag: restaurant.uuid,
+                            child: Image.network(
+                              getImage(restaurant.image),
+                              height: 200.0,
+                              width: MediaQuery.of(context).size.width,
+                              fit: BoxFit.cover,
+                            ))),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 150.0),
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: Container(
+                          height: 32,
+                          width: 85,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20)
+                              ),
+                              color: Colors.black.withOpacity(0.5)
+                          ),
+                          child: Center(
+                            child: Text(
+                              (restaurant.order_preparation_time_second != null)? '~' + '${restaurant.order_preparation_time_second ~/ 60} мин' : '',
+                              style: TextStyle(
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 Container(
                   margin: EdgeInsets.only(left: 15.0, top: 12, bottom: 12),
                   child: Column(
@@ -130,28 +228,21 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                       ),
                       Row(
                         children: <Widget>[
-                          Text(
-                            (restaurant.order_preparation_time_second != null)? '~' + '${restaurant.order_preparation_time_second ~/ 60} мин' : '',
-                            style: TextStyle(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w600
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Text(
-                              (restaurant.destination_points != null)
-                                  ? restaurant.destination_points[0].type
-                                  : ' ',
-                              style: TextStyle(
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF3F3F3F),
+                          Flexible(child: Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(left: 5, right: 10),
+                              child: Text(
+                                (restaurant.product_category != null) ? restaurant.getCategoriesString():
+                                '',
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF3F3F3F),
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
-                          )
+                          ))
                         ],
                       ),
                       SizedBox(
@@ -451,7 +542,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                                       width: 60,
                                       child: Padding(
                                           padding: EdgeInsets.only(
-                                              top: 12, bottom: 12, right: 0),
+                                              top: 20, bottom: 4, left: 10),
                                           child: SvgPicture.asset(
                                               'assets/svg_images/menu.svg')
                                       )),
@@ -596,6 +687,7 @@ class OrderChecking extends StatefulWidget {
     'order_start',
     'on_place',
     'on_the_way',
+    'transferred_to_store',
     'order_payment'
   ];
 
@@ -721,7 +813,8 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    var processing = ['waiting_for_confirmation'];
+    var processing = ['waiting_for_confirmation',
+      'transferred_to_store'];
     var cooking_state = [
       'cooking',
       'offer_offered',
@@ -971,13 +1064,13 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
               ),
             ),
             (in_the_way.contains(ordersStoryModelItem.state) && ordersStoryModelItem.own_delivery != null && ordersStoryModelItem.own_delivery) ? Padding(
-              padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
-              child: Text('Доставку осуществляет курьер от заведения',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14
-                ),
-              )
+                padding: EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                child: Text('Доставку осуществляет курьер от заведения',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14
+                  ),
+                )
             ) :
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

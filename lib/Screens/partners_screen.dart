@@ -49,14 +49,14 @@ class PartnersScreenState extends State<PartnersScreen>{
                           ),
                         ),
                         Flexible(
-                          flex: 10,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 0),
-                              child: Text("Партнеры", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold ),),
-                            ),
-                          )
+                            flex: 10,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 0),
+                                child: Text("Партнеры", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold ),),
+                              ),
+                            )
                         ),
                       ],
                     ),

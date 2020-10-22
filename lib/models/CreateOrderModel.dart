@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_app/models/last_addresses_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import '../Config/config.dart';
@@ -63,6 +64,10 @@ class CreateOrder {
 
   Future sendData() async {
     NecessaryAddressData necessaryAddressData = await loadNecessaryAddressData(address);
+    // Добавляем адрес в последние использованые
+    if(necessaryAddressData != null && necessaryAddressData.destinationPoints.length >  0) {
+      await LastAddressesModel.addAddress(necessaryAddressData.destinationPoints[0]);
+    }
     await sendRefreshToken();
     print(authCodeData.token);
     var url = 'https://client.apis.prod.faem.pro/api/v2/orders';
@@ -108,6 +113,8 @@ class CreateOrder {
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
-    print("PROD" + response.body);
+    print(response.body);
   }
+
+
 }

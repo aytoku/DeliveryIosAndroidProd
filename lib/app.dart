@@ -13,6 +13,9 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Color(0xFFFD6F6D),
         cursorColor: Color(0xFFFD6F6D),
+        unselectedWidgetColor: Color(0xFFFD6F6D),
+        selectedRowColor: Color(0xFFFD6F6D),
+        toggleableActiveColor: Color(0xFFFD6F6D),
       ),
       home: DeviceIdScreen(),
       navigatorObservers: [

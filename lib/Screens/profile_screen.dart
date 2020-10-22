@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/Config/config.dart';
 import 'package:flutter_app/Internet/check_internet.dart';
 import 'package:flutter_app/data/data.dart';
+import 'package:flutter_app/models/last_addresses_model.dart';
 import 'package:flutter_svg/svg.dart';
 import 'auth_screen.dart';
 import 'device_id_screen.dart';
@@ -173,6 +174,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                           necessaryDataForAuth.refresh_token = null;
                           authCodeData.refresh_token = null;
                           await NecessaryDataForAuth.saveData();
+                          await LastAddressesModel.clear();
                           Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (context) => DeviceIdScreen()),

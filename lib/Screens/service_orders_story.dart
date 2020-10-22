@@ -62,7 +62,7 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  '${ordersStoryModelItem.price + 134} \Р',
+                  '${ordersStoryModelItem.price + 134} \₽',
                   style: TextStyle(
                     fontSize: 14,
                     color: Color(0xFFB0B0B0),
@@ -304,7 +304,7 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 15),
                           child: Text(
-                              '${restaurantDataItems.products[index].price} \Р'),
+                              '${restaurantDataItems.products[index].price} \₽'),
                         )
                       ],
                     ),

@@ -8,6 +8,8 @@ import 'package:flutter_app/models/RestaurantDataItems.dart';
 import 'package:flutter_app/models/food.dart';
 import 'package:flutter_app/models/order.dart';
 import 'package:flutter_svg/svg.dart';
+import '../models/RestaurantDataItems.dart';
+import '../models/RestaurantDataItems.dart';
 import 'cart_screen.dart';
 import 'home_screen.dart';
 
@@ -53,6 +55,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   GlobalKey<FormState> _foodItemFormKey = GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey();
 
+
   _RestaurantScreenState(this.restaurant, this.category);
 
   _buildMenuItem(FoodRecords restaurantDataItems) {
@@ -61,104 +64,184 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
       key: cartItemsQuantityKey,
       restaurantDataItems: restaurantDataItems,
     );
-    return Center(
-        child: GestureDetector(
-            onTap: () async {
-              if (await Internet.checkConnection()) {
-                _onPressedButton(restaurantDataItems, cartItemsQuantityKey);
-              } else {
-                noConnection(context);
-              }
-            },
-            child: Container(
-              //width: 170,
-              height: 260,
-              decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8.0, // soften the shadow
-                      spreadRadius: 3.0, //extend the shadow
-                    )
-                  ],
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15.0),
-                  border: Border.all(width: 1.0, color: Colors.grey[200])),
-              child: Stack(
-                children: <Widget>[
-                  ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15),
-                          bottomRight: Radius.circular(15)),
-                      child: Hero(
-                        tag: restaurantDataItems.name,
-                        child: Image.network(
-                          getImage(restaurantDataItems.image),
-                          fit: BoxFit.cover,
-                          height: 190,
-                          width: MediaQuery.of(context).size.width,
-                        ),)),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFFFFFFF),
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: Center(
+          child: GestureDetector(
+              onTap: () async {
+                if (await Internet.checkConnection()) {
+                  _onPressedButton(restaurantDataItems, cartItemsQuantityKey);
+                } else {
+                  noConnection(context);
+                }
+              },
+              child: Container(
+                //width: 170,
+                height: 260,
+                decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8.0, // soften the shadow
+                        spreadRadius: 3.0, //extend the shadow
+                      )
+                    ],
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15.0),
+                    border: Border.all(width: 1.0, color: Colors.grey[200])),
+                child: Stack(
+                  children: <Widget>[
+                    ClipRRect(
                         borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
                             bottomLeft: Radius.circular(15),
                             bottomRight: Radius.circular(15)),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(left: 10, bottom: 15),
-                            child: Text(
-                              restaurantDataItems.name,
-                              style: TextStyle(
-                                  fontSize: 15.0, color: Color(0xFF3F3F3F)),
-                              overflow: TextOverflow.ellipsis,
+                        child: Hero(
+                          tag: restaurantDataItems.name,
+                          child: Image.network(
+                            getImage(restaurantDataItems.image),
+                            fit: BoxFit.cover,
+                            height: 190,
+                            width: MediaQuery.of(context).size.width,
+                          ),)),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        height: 90,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFFFFFF),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(15),
+                              bottomRight: Radius.circular(15)),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(left: 10, bottom: 15),
+                              child: Text(
+                                restaurantDataItems.name,
+                                style: TextStyle(
+                                    fontSize: 15.0, color: Color(0xFF3F3F3F)),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          Padding(
-                            padding:
-                            EdgeInsets.only(left: 10, right: 10, top: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Align(
-                                  child: Text(
-                                    '${restaurantDataItems.price}\₽',
-                                    style: TextStyle(
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF6EC292)),
-                                    overflow: TextOverflow.ellipsis,
+                            SizedBox(
+                              height: 4.0,
+                            ),
+                            Padding(
+                              padding:
+                              EdgeInsets.only(left: 10, right: 10, top: 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Align(
+                                    child: Text(
+                                      '${restaurantDataItems.price}\₽',
+                                      style: TextStyle(
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF6EC292)),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                                Align(
-                                  child: cartItemsQuantity,
-                                )
-                              ],
-                            ),
-                          )
-                        ],
+                                  Align(
+                                    child: cartItemsQuantity,
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            )));
+                    )
+                  ],
+                ),
+              ))),
+    );
   }
+
+  _dayOff(FoodRecords restaurantDataItems,
+      GlobalKey<CartItemsQuantityState> cartItemsQuantityKey) {
+    GlobalKey<VariantsSelectorState> variantsSelectorStateKey =
+    GlobalKey<VariantsSelectorState>();
+    GlobalKey<ToppingsSelectorState> toppingsSelectorStateKey =
+    new GlobalKey<ToppingsSelectorState>();
+
+    DateTime now = DateTime.now();
+    int dayNumber  = now.weekday-1;
+
+    int work_beginning = restaurant.work_schedule[dayNumber].work_beginning;
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(12),
+            topRight: const Radius.circular(12),
+          )),
+      child: Stack(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top: 30),
+            child: Align(
+                alignment: Alignment.topCenter,
+                child: Text('К сожалению, доставка не доступна.\nБлижайшее время в ${( work_beginning/ 60).toStringAsFixed(0)} часов',
+                  style: TextStyle(
+                      fontSize: 16
+                  ),
+                  textAlign: TextAlign.center,
+                )
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 10,left: 15, right: 15, bottom: 15),
+            child: Align(
+                alignment: Alignment.bottomCenter,
+                child: FlatButton(
+                  child: Text(
+                    "Далее",
+                    style:
+                    TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  color: Color(0xFFFE534F),
+                  splashColor: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.only(
+                      left: 110, top: 20, right: 110, bottom: 20),
+                  onPressed: () async {
+                    homeScreenKey = new GlobalKey<HomeScreenState>();
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) => HomeScreen()),
+                            (Route<dynamic> route) => false);
+                  },
+                )
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
 
   void _onPressedButton(FoodRecords food,
       GlobalKey<CartItemsQuantityState> cartItemsQuantityKey) {
+
+    DateTime now = DateTime.now();
+    int currentTime = now.hour*60+now.minute;
+    print((currentTime/60).toString() + 'KANTENT');
+    print((now.hour).toString() + 'KANTENT');
+    print((now.minute).toString() + 'KANTENT');
+    int dayNumber  = now.weekday-1;
+
+    int work_beginning = restaurant.work_schedule[dayNumber].work_beginning;
+    int work_ending = restaurant.work_schedule[dayNumber].work_ending;
+    bool day_off = restaurant.work_schedule[dayNumber].day_off;
+    bool available = restaurant.available != null ? restaurant.available : true;
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -169,10 +252,12 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             )),
         context: context,
         builder: (context) {
-          if(food.comment != "" && food.comment != null){
+          if(day_off ||
+              !available ||
+              !(currentTime >= work_beginning && currentTime < work_ending)){
             return Container(
-              height: 520,
-              child: _buildBottomNavigationMenu(food, cartItemsQuantityKey),
+              height: 200,
+              child: _dayOff(food, cartItemsQuantityKey),
               decoration: BoxDecoration(
                   color: Theme.of(context).canvasColor,
                   borderRadius: BorderRadius.only(
@@ -181,16 +266,29 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   )),
             );
           }else{
-            return Container(
-              height: 440,
-              child: _buildBottomNavigationMenu(food, cartItemsQuantityKey),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(12),
-                    topRight: const Radius.circular(12),
-                  )),
-            );
+            if(food.comment != "" && food.comment != null){
+              return Container(
+                height: 520,
+                child: _buildBottomNavigationMenu(food, cartItemsQuantityKey),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).canvasColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(12),
+                      topRight: const Radius.circular(12),
+                    )),
+              );
+            }else{
+              return Container(
+                height: 440,
+                child: _buildBottomNavigationMenu(food, cartItemsQuantityKey),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).canvasColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(12),
+                      topRight: const Radius.circular(12),
+                    )),
+              );
+            }
           }
         });
   }
@@ -332,6 +430,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
     GlobalKey<VariantsSelectorState>();
     GlobalKey<ToppingsSelectorState> toppingsSelectorStateKey =
     new GlobalKey<ToppingsSelectorState>();
+    GlobalKey<PriceFieldState> priceFieldKey =
+    new GlobalKey<PriceFieldState>();
+
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -384,7 +485,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           alignment: Alignment.centerLeft,
                           child: Padding(
                             padding:
-                            EdgeInsets.only(left: 15, top: 20, bottom: 20),
+                            EdgeInsets.only(left: 15, top: 20, bottom: 10),
                             child: Text(
                               restaurantDataItems.comment,
                               style: TextStyle(
@@ -455,50 +556,33 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Stack(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(left: 15),
-                            child: Text(
-                              restaurantDataItems.name,
-                              style: TextStyle(
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF000000)),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 5),
-                            child: (restaurantDataItems.weight != null && restaurantDataItems.weight_measure!= null)
-                                ? Text(
-                              restaurantDataItems.weight + " " + restaurantDataItems.weight_measure, //ну а чо
-                              style: TextStyle(
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, right: 10),
+                      child: Container(
+                        child: RichText(text:
+                        TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(text: restaurantDataItems.name,
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF000000)),),
+                              TextSpan(text: (restaurantDataItems.weight != null && restaurantDataItems.weight_measure!= null)
+                                  ? '  ' + restaurantDataItems.weight + " " + restaurantDataItems.weight_measure
+                                  : '', style: TextStyle(
                                   fontSize: 12.0,
-                                  color: Color(0xFFB0B0B0)),
-                            )
-                                : Container(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Text(
-                          '${restaurantDataItems.price}\₽',
-                          style: TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF000000)),
-                          overflow: TextOverflow.ellipsis,
+                                  color: Color(0xFFB0B0B0)),)
+                            ]
+                        )
                         ),
                       ),
+                    )),
+                    Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: PriceField(key: priceFieldKey, restaurantDataItems: restaurantDataItems),
                     )
                   ],
                 ),
@@ -514,14 +598,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         child: Padding(
                           padding: EdgeInsets.only(right: 0),
                           child: Counter(
-                            key: counterKey,
+                              key: counterKey,
+                              priceFieldKey: priceFieldKey
                           ),
                         ),
                       ),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: Padding(
-                          padding: EdgeInsets.only(left: 15, right: 5),
+                          padding: EdgeInsets.only(left: 15, right: 5, bottom: 10),
                           child: FlatButton(
                             child: Text(
                               "Добавить",
@@ -628,52 +713,49 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   }
 
   _buildFoodCategoryList() {
-    return Flexible(
-      flex: 1,
-      child: Container(
-        height: 50,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          children: List.generate(restaurant.product_category.length, (index) {
-            return GestureDetector(
-              child: Padding(
-                  padding:
-                  EdgeInsets.only(left: 5, right: 5, top: 0, bottom: 10),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        color: (restaurant.product_category[index] != category)
-                            ? Color(0xFFF6F6F6)
-                            : Color(0xFFFE534F)),
-                    child: Padding(
-                        padding: EdgeInsets.only(left: 15, right: 15),
-                        child: Center(
-                          child: Text(
-                            restaurant.product_category[index],
-                            style: TextStyle(
-                                color: (restaurant.product_category[index] !=
-                                    category)
-                                    ? Color(0xFF424242)
-                                    : Colors.white,
-                                fontSize: 15),
-                          ),
-                        )),
-                  )),
-              onTap: () async {
-                if (await Internet.checkConnection()) {
-                  setState(() {
-                    isLoading = true;
-                    page = 1;
-                    category = (restaurant.product_category[index] == category) ? '' : restaurant.product_category[index];
-                    _color = !_color;
-                  });
-                } else {
-                  noConnection(context);
-                }
-              },
-            );
-          }),
-        ),
+    return Container(
+      height: 50,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: List.generate(restaurant.product_category.length, (index) {
+          return GestureDetector(
+            child: Padding(
+                padding:
+                EdgeInsets.only(left: 11, top: 5, bottom: 5),
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      color: (restaurant.product_category[index] != category)
+                          ? Color(0xFFF6F6F6)
+                          : Color(0xFFFE534F)),
+                  child: Padding(
+                      padding: EdgeInsets.only(left: 15, right: 15),
+                      child: Center(
+                        child: Text(
+                          restaurant.product_category[index],
+                          style: TextStyle(
+                              color: (restaurant.product_category[index] !=
+                                  category)
+                                  ? Color(0xFF424242)
+                                  : Colors.white,
+                              fontSize: 15),
+                        ),
+                      )),
+                )),
+            onTap: () async {
+              if (await Internet.checkConnection()) {
+                setState(() {
+                  isLoading = true;
+                  page = 1;
+                  category = (restaurant.product_category[index] == category) ? '' : restaurant.product_category[index];
+                  _color = !_color;
+                });
+              } else {
+                noConnection(context);
+              }
+            },
+          );
+        }),
       ),
     );
   }
@@ -723,7 +805,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                       width: 60,
                                       child: Padding(
                                         padding: EdgeInsets.only(
-                                            top: 12, bottom: 12, right: 10),
+                                            top: 12, bottom: 12, right: 10, left: 16),
                                         child: SvgPicture.asset(
                                             'assets/svg_images/arrow_left.svg'),
                                       ))),
@@ -747,14 +829,19 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         ],
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                      child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+                    ),
                     _buildFoodCategoryList(),
-                    Flexible(
-                      flex: 8,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Center(
-                          child: Text('Нет товаров данной категории'),
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                      child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Text('Нет товаров данной категории'),
                       ),
                     ),
                     SizedBox(height: 10.0),
@@ -800,7 +887,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                               padding: EdgeInsets.only(
                                                   top: 12,
                                                   bottom: 12,
-                                                  right: 20),
+                                                  right: 16),
                                               child: SvgPicture.asset(
                                                   'assets/svg_images/arrow_left.svg'),
                                             ))),
@@ -826,9 +913,16 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         )
                       ],
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                      child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+                    ),
                     _buildFoodCategoryList(),
-                    Flexible(
-                      flex: 8,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                      child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+                    ),
+                    Expanded(
                       child: NotificationListener<ScrollNotification>(
                         // ignore: missing_return
                           onNotification: (ScrollNotification scrollInfo) {
@@ -848,13 +942,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             }
                           },
                           child: GridView.count(
-                            padding: EdgeInsets.all(10.0),
+                            padding: EdgeInsets.only(left: 10.0, right: 10, bottom: 0),
                             crossAxisCount: 2,
                             mainAxisSpacing: 8.0,
                             crossAxisSpacing: 10.0,
-                            childAspectRatio:
-                            MediaQuery.of(context).size.width /
-                                (MediaQuery.of(context).size.height / 1),
+                            childAspectRatio: 0.65,
                             children: List.generate(food_records_items.length,
                                     (index) {
                                   FoodRecords food = food_records_items[index];
@@ -933,21 +1025,28 @@ class CartItemsQuantityState extends State<CartItemsQuantity> {
 }
 
 class Counter extends StatefulWidget {
-  Counter({Key key}) : super(key: key);
+  GlobalKey<PriceFieldState> priceFieldKey;
+  Counter({Key key, this.priceFieldKey}) : super(key: key);
 
   @override
   CounterState createState() {
-    return new CounterState();
+    return new CounterState(priceFieldKey);
   }
 }
 
 class CounterState extends State<Counter> {
+  GlobalKey<PriceFieldState> priceFieldKey;
+  CounterState(this.priceFieldKey);
+
   int counter = 1;
 
   // ignore: non_constant_identifier_names
   void _incrementCounter_plus() {
     setState(() {
       counter++;
+      if(priceFieldKey.currentState != null){
+        priceFieldKey.currentState.setCount(counter);
+      }
     });
   }
 
@@ -955,14 +1054,18 @@ class CounterState extends State<Counter> {
   void _incrementCounter_minus() {
     setState(() {
       counter--;
+      if(priceFieldKey.currentState != null){
+        priceFieldKey.currentState.setCount(counter);
+      }
     });
   }
+
 
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 15, right: 0),
       child: Container(
-        width: 120,
+        width: 122,
         height: 58,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.0),
@@ -974,6 +1077,7 @@ class CounterState extends State<Counter> {
               onTap: () {
                 if (counter != 1) {
                   _incrementCounter_minus();
+                  // counter = restaurantDataItems.records_count;
                 }
               },
               child: Container(
@@ -1009,6 +1113,7 @@ class CounterState extends State<Counter> {
                 if (await Internet.checkConnection()) {
                   setState(() {
                     _incrementCounter_plus();
+                    // counter = restaurantDataItems.records_count;
                   });
                 } else {
                   noConnection(context);
@@ -1039,6 +1144,40 @@ class CounterState extends State<Counter> {
   }
 }
 
+
+class PriceField extends StatefulWidget {
+  FoodRecords restaurantDataItems;
+  PriceField({Key key, this.restaurantDataItems}) : super(key: key);
+
+  @override
+  PriceFieldState createState() {
+    return new PriceFieldState(restaurantDataItems);
+  }
+}
+
+class PriceFieldState extends State<PriceField> {
+  int count = 1;
+  FoodRecords restaurantDataItems;
+  PriceFieldState(this.restaurantDataItems);
+  Widget build(BuildContext context) {
+    return Text(
+
+      '${restaurantDataItems.price * count}\₽',
+
+      style: TextStyle(
+          fontSize: 15.0,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF000000)),
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+  void setCount(int newCount){
+    setState(() {
+      count = newCount;
+    });
+  }
+}
+
 class ButtonCounter extends StatefulWidget {
   ButtonCounter({Key key}) : super(key: key);
 
@@ -1055,7 +1194,7 @@ class ButtonCounterState extends State<ButtonCounter> {
     currentUser.cartDataModel.cart.forEach(
             (Order order) => totalPrice += order.quantity * order.food.price);
 
-    return Text('${totalPrice.toStringAsFixed(0)} \Р',
+    return Text('${totalPrice.toStringAsFixed(0)} \₽',
         style: TextStyle(
             fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.white));
   }
@@ -1116,7 +1255,7 @@ class BasketButtonState extends State<BasketButton> {
       return Container();
     }
     return Padding(
-      padding: EdgeInsets.only(top: 15, right: 15, left: 15, bottom: 15),
+      padding: EdgeInsets.only(top: 15, right: 15, left: 15, bottom: 20),
       child: FlatButton(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1224,9 +1363,15 @@ class VariantsSelectorState extends State<VariantsSelector> {
     variantsList.forEach((element) {
       widgetsList.add(
         ListTile(
-          title: Text(
-            element.name,
-            style: TextStyle(color: Color(0xFF424242)),
+          title: GestureDetector(
+            child: Text(
+              element.name,
+              style: TextStyle(color: Color(0xFF424242)),
+            ),onTap: (){
+            setState(() {
+              selectedVariant = element;
+            });
+          },
           ),
           leading: Radio(
             value: element,

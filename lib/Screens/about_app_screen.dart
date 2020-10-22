@@ -33,12 +33,12 @@ class AboutAppScreenState extends State<AboutAppScreen> {
                               children: <Widget>[
                                 Center(
                                   child: Padding(
-                                    padding: EdgeInsets.only(top: 20, bottom: 10),
-                                    child: Image(
-                                      height: 140,
-                                      width: 140,
-                                      image: AssetImage('assets/images/faem.png'),
-                                    )
+                                      padding: EdgeInsets.only(top: 20, bottom: 10),
+                                      child: Image(
+                                        height: 140,
+                                        width: 140,
+                                        image: AssetImage('assets/images/faem.png'),
+                                      )
                                   ),
                                 ),
                                 Padding(
@@ -135,9 +135,9 @@ class AboutAppScreenState extends State<AboutAppScreen> {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 10, left: 15),
+                  padding: EdgeInsets.only(bottom: 20, left: 15),
                   child: Text(
-                    '@ 2011-2020 ООО «Faem.Taxi»',
+                    '@ 2011-2020 ООО «ФАЕМ.ТЕХНОЛОГИИ»',
                     style: TextStyle(color: Color(0x97979797), fontSize: 15),
                   ),
                 ),

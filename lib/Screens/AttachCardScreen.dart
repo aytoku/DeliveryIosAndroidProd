@@ -153,7 +153,7 @@ class AttachCardScreenState extends State<AttachCardScreen> {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding:
-                      EdgeInsets.only(bottom: 10, left: 0, right: 0, top: 10),
+                  EdgeInsets.only(bottom: 10, left: 0, right: 0, top: 10),
                   child: FlatButton(
                     child: Text('Привязать карту',
                         style: TextStyle(

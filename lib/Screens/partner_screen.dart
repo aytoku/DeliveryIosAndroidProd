@@ -50,29 +50,29 @@ class PartnerScreenState extends State<PartnerScreen>{
               ),
             ),
             Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: Text(
-                  '№ ' + owner.id.toString(),
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Color(0x97979797)
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Text(
+                    '№ ' + owner.id.toString(),
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Color(0x97979797)
+                    ),
                   ),
-                ),
-              )
+                )
             ),
             Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: 15, top: 10),
-                child: Text(
-                  'ООО “Партнер 1”, 362040, Северная\nОсетия - Алания Респ., г. Владикавказ,\nпросп. Мира, д. 31, ORGN: 111111939',
-                  style: TextStyle(
-                      fontSize: 17
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 15, top: 10),
+                  child: Text(
+                    'ООО “Партнер 1”, 362040, Северная\nОсетия - Алания Респ., г. Владикавказ,\nпросп. Мира, д. 31, ORGN: 111111939',
+                    style: TextStyle(
+                        fontSize: 17
+                    ),
                   ),
-                ),
-              )
+                )
             )
           ],
         )

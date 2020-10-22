@@ -133,6 +133,17 @@ class Records{
       created_at_unix: parsedJson['created_at_unix'],
     );
   }
+
+  String getCategoriesString(){
+    String result = '';
+    product_category.forEach((element) {
+      result += element + ', ';
+    });
+    if(result == ''){
+      return result;
+    }
+    return result.substring(0, result.length - 3);
+  }
 }
 
 class WorkSchedule{
@@ -192,6 +203,7 @@ class DestinationPoints{
   int radius;
   double lat;
   double lon;
+  String name;
 
   DestinationPoints( {
     this.uuid,
@@ -217,6 +229,7 @@ class DestinationPoints{
     this.radius,
     this.lat,
     this.lon,
+    this.name
   });
 
   factory DestinationPoints.fromJson(Map<String, dynamic> parsedJson){

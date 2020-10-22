@@ -25,18 +25,18 @@ class InformationScreenState extends State<InformationScreen>{
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: EdgeInsets.only(top:30, bottom: 0),
-                      child: Container(
-                          height: 50,
-                          width: 60,
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 12, bottom: 12, right: 15),
-                            child: Center(
+                        padding: EdgeInsets.only(top:30, bottom: 0),
+                        child: Container(
+                            height: 50,
+                            width: 60,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 12, bottom: 12, right: 15),
+                              child: Center(
                                 child:SvgPicture.asset(
                                     'assets/svg_images/arrow_left.svg'),
-                            ),
-                          )
-                      )
+                              ),
+                            )
+                        )
                     )
                 ),
                 onTap: () async {

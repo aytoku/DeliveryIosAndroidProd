@@ -51,34 +51,34 @@ class TicketsChatScreenState extends State<TicketsChatScreen>
 
   buildChat() {
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         key: _scaffoldKey,
         resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.only(right: 0),
-              child: Text(
-                'Обращение ' + time,
-                style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF424242)),
-              ),
-            )
-          ),
-          leading: InkWell(
-            child: Container(
+            backgroundColor: Colors.white,
+            title: Align(
+                alignment: Alignment.topCenter,
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      top: 20, bottom: 20),
-                  child: SvgPicture.asset(
-                      'assets/svg_images/arrow_left.svg'),
-                )),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          )
+                  padding: EdgeInsets.only(right: 0),
+                  child: Text(
+                    'Обращение ' + time,
+                    style: TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF424242)),
+                  ),
+                )
+            ),
+            leading: InkWell(
+              child: Container(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 20, bottom: 20),
+                    child: SvgPicture.asset(
+                        'assets/svg_images/arrow_left.svg'),
+                  )),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            )
         ),
         body: Stack(
           children: <Widget>[

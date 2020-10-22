@@ -53,7 +53,7 @@ class OrdersStoryScreenState extends State<OrdersStoryScreen> {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  '${ordersStoryModelItem.price + ordersStoryModelItem.tariff.productsPrice - ordersStoryModelItem.tariff.bonusPayment} \Р',
+                  '${ordersStoryModelItem.price + ordersStoryModelItem.tariff.productsPrice - ordersStoryModelItem.tariff.bonusPayment} \₽',
                   style: TextStyle(
                     fontSize: 14,
                     color: Color(0xFFB0B0B0),
@@ -295,7 +295,7 @@ class OrdersStoryScreenState extends State<OrdersStoryScreen> {
                         Padding(
                           padding: EdgeInsets.only(left: 15),
                           child: Text(
-                              '${restaurantDataItems.products[index].price} \Р'),
+                              '${restaurantDataItems.products[index].price} \₽'),
                         )
                       ],
                     ),

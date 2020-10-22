@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/PostData/necessary_address_data_pass.dart';
 import 'package:flutter_app/models/NecessaryAddressModel.dart';
 import 'package:flutter_app/models/ResponseData.dart';
+import 'package:flutter_app/models/last_addresses_model.dart';
 import 'package:flutter_app/models/my_addresses_model.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+
+import 'device_id_screen.dart';
 
 class AutoComplete extends StatefulWidget {
   String hint;
@@ -14,8 +17,10 @@ class AutoComplete extends StatefulWidget {
   AutoCompleteDemoState createState() => AutoCompleteDemoState(hint);
 }
 
-class AutoCompleteDemoState extends State<AutoComplete> {
+class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveClientMixin{
   String hint;
+  @override
+  bool get wantKeepAlive => true;
 
   AutoCompleteDemoState(this.hint);
   TextEditingController controller = new TextEditingController();
@@ -30,24 +35,32 @@ class AutoCompleteDemoState extends State<AutoComplete> {
         necessaryAddressDataItems =
             (await loadNecessaryAddressData(name)).destinationPoints;
       } else {
+        // Вывод фаворитных адресов
         List<MyAddressesModel> temp = await MyAddressesModel.getAddresses();
         necessaryAddressDataItems = new List<DestinationPoints>();
+        // Бежим по фаворитным адресам
         for (int i = 0; i < temp.length; i++) {
           var element = temp[i];
+          // Получаем адрес с серва
           NecessaryAddressData necessaryAddressData =
           await loadNecessaryAddressData(element.address);
-          if (necessaryAddressData.destinationPoints.length > 0) {
-            necessaryAddressData.destinationPoints[0].comment = temp[i].comment;
+          // Если на серве есть такой адрес
+          if(necessaryAddressData.destinationPoints.length > 0){
+            necessaryAddressData.destinationPoints[0].comment = element.comment;
+            necessaryAddressData.destinationPoints[0].name = element.name;
             necessaryAddressDataItems
                 .add(necessaryAddressData.destinationPoints[0]);
-          } else {
+          }else{
             necessaryAddressDataItems.add(new DestinationPoints(
-                street: element.address, house: '', comment: temp[i].comment));
+                street: element.address, house: '', comment: temp[i].comment, name: element.name));
           }
         }
+
+        // Вывод последних адресов
+        List<DestinationPoints> last_dp = await LastAddressesModel.getAddresses();
+        necessaryAddressDataItems.addAll(last_dp);
       }
       print(necessaryAddressDataItems[0].unrestricted_value);
-      print('dick lenght ' + necessaryAddressDataItems.length.toString());
     } catch (e) {
       print("Error getting users.");
     } finally {
@@ -62,25 +75,24 @@ class AutoCompleteDemoState extends State<AutoComplete> {
   }
 
   Widget row(DestinationPoints user) {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-            child: Text(
-              user.unrestricted_value,
-              style: TextStyle(fontSize: 16.0, decoration: TextDecoration.none),
-              textAlign: TextAlign.start,
-            ),
-          ),
-        )
-      ],
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+        child: Text(
+          user.name != null && user.name != '' ? user.name : user.unrestricted_value,
+          //user.unrestricted_value,
+          style: TextStyle(fontSize: 16.0, decoration: TextDecoration.none),
+          textAlign: TextAlign.start,
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: MediaQuery.of(context).size.width,
       child: Theme(
         data: new ThemeData(hintColor: Color(0xF2F2F2F2)),
         child: Padding(

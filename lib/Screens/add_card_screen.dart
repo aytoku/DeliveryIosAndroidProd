@@ -15,11 +15,11 @@ class _AddCartScreenState extends State<AddCartScreen> {
     addCart.forEach((AddCart addCart) {
       restaurantList.add(GestureDetector(
           onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    //builder: (_) => RestaurantScreen(restaurant: restaurant),
-                    ),
-              ),
+            context,
+            MaterialPageRoute(
+              //builder: (_) => RestaurantScreen(restaurant: restaurant),
+            ),
+          ),
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
             decoration: BoxDecoration(
