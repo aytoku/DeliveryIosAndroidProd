@@ -28,7 +28,7 @@ class CreateOrderTakeAway {
   });
 
   sendRefreshToken() async{
-    var url = 'https://client.apis.stage.faem.pro/api/v2/auth/refresh';
+    var url = 'https://client.apis.prod.faem.pro/api/v2/auth/refresh';
     var response = await http.post(url, body: jsonEncode({"refresh": authCodeData.refresh_token}),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -46,7 +46,7 @@ class CreateOrderTakeAway {
   Future sendData() async {
     await sendRefreshToken();
     print(authCodeData.token);
-    var url = 'https://client.apis.stage.faem.pro/api/v2/orders';
+    var url = 'https://client.apis.prod.faem.pro/api/v2/orders';
     var response = await http.post(url, body: jsonEncode({
       "callback_phone": currentUser.phone,
       "increased_fare": 25,
@@ -56,7 +56,7 @@ class CreateOrderTakeAway {
       "routes": [
         restaurantAddress.toJson(),
       ],
-      "service_uuid": "6b73e9e3-927b-453c-81c4-dfae818291f4",
+      "service_uuid": "833fc341-dbd8-4dcb-adff-fd22246756d1",
     }), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
@@ -66,7 +66,7 @@ class CreateOrderTakeAway {
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
 
-      http.Response suka = await http.get('https://client.apis.stage.faem.pro/api/v2/orders/' + jsonResponse['uuid'],
+      http.Response suka = await http.get('https://client.apis.prod.faem.pro/api/v2/orders/' + jsonResponse['uuid'],
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json',
@@ -77,6 +77,6 @@ class CreateOrderTakeAway {
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
-    print(response.body);
+    print(response.body + 'tutu');
   }
 }
