@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_app/models/ResponseData.dart';
 import 'package:flutter_app/models/RestaurantDataItems.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -32,4 +33,22 @@ Future<RestaurantDataItems> loadRestaurantItems(String uuid, String category, in
   }
   print(restaurantDataItems1);
   return restaurantDataItems1;
+}
+
+Future<RestaurantDataItems> loadAllRestaurantItems(Records restaurant) async {
+  // Получаем количество еды в ресторане
+  int recordsCount =
+      (await loadRestaurantItems(restaurant.uuid, "", 1, 1)).records_count;
+  if(recordsCount == 0)
+    return new RestaurantDataItems(records_count: 0);  // Получаем всю еду в неотсортированном виде
+  RestaurantDataItems result = await loadRestaurantItems(restaurant.uuid, "", 1, recordsCount);
+
+  // Сортируем список еды
+  result.records.sort((var a, var b) {
+    int aCategoryIndex = restaurant.product_category.indexOf(a.category);
+    int bCategoryIndex = restaurant.product_category.indexOf(b.category);
+    return aCategoryIndex.compareTo(bCategoryIndex);
+  });
+
+  return result;
 }

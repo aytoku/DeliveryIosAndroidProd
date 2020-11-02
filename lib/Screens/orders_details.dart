@@ -297,9 +297,53 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
           )));
     });
 
-    result.add(Column(
+    (ordersStoryModelItem.own_delivery != null && ordersStoryModelItem.own_delivery) ? result.add(Column(
       children: [
-        (ordersStoryModelItem.own_delivery != null && ordersStoryModelItem.own_delivery) ? Container(height: 0) : Padding(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 15, bottom: 20, top: 10),
+              child: Text(
+                'Итого',
+                style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF000000)),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: 15, bottom: 20),
+              child: Text('${totalPrice.toStringAsFixed(0)} \₽',
+                  style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF000000))),
+            )
+          ],
+        ),
+        Container(height: 10, color: Color(0xF3F3F3F3),),
+        Padding(
+            padding: EdgeInsets.only(left: 15, top: 15, right: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "Доставка оплачивается отдельно",
+                  style: TextStyle(
+                      color: Color(0xFF000000),
+                      fontSize: 14),
+                ),
+              ],
+            )
+        ),
+        Container(
+          height: MediaQuery.of(context).size.height,
+        )
+      ],
+    ),) : result.add(Column(
+      children: [
+        Padding(
             padding: EdgeInsets.only(left: 15, top: 10, bottom: 10, right: 15),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
