@@ -157,7 +157,7 @@ class _AuthScreenState extends State<AuthScreen> {
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 100, top: 10),
+                  padding: EdgeInsets.only(bottom: 90, top: 10),
                   child: Text.rich(
                     TextSpan(
                         text:
@@ -209,7 +209,7 @@ class _AuthScreenState extends State<AuthScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                  padding: EdgeInsets.only(bottom: 30, top: 10),
+                  padding: EdgeInsets.only(bottom: 20, top: 10),
                   child: Button(key: buttonStateKey, color: Color(0xF3F3F3F3),)
               ),
             ),

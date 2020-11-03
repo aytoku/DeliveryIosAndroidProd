@@ -353,7 +353,7 @@ class PageState extends State<PageScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 25, left: 15, right: 15, top: 10),
+                padding: EdgeInsets.only(bottom: 15, left: 15, right: 15, top: 10),
                 child: FlatButton(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

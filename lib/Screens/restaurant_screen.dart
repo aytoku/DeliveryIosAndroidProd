@@ -455,11 +455,8 @@ class RestaurantScreenState extends State<RestaurantScreen> {
                 }),
               )
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15.0),
-            child: BasketButton(
-                key: basketButtonStateKey, restaurant: restaurant),
-          )
+          BasketButton(
+              key: basketButtonStateKey, restaurant: restaurant),
         ],
       ),
     );

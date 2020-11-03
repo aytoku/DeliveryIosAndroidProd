@@ -296,7 +296,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
             ],
           )));
     });
-
+    double own_delivery_price = totalPrice - ordersStoryModelItem.tariff.totalPrice;
     (ordersStoryModelItem.own_delivery != null && ordersStoryModelItem.own_delivery) ? result.add(Column(
       children: [
         Row(
@@ -314,7 +314,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
             ),
             Padding(
               padding: EdgeInsets.only(right: 15, bottom: 20),
-              child: Text('${totalPrice.toStringAsFixed(0)} \₽',
+              child: Text('${own_delivery_price.toStringAsFixed(0)} \₽',
                   style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.bold,

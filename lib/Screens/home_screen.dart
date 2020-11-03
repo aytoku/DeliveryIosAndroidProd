@@ -528,30 +528,46 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                   },
                   child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 30, bottom: 0, left: 0),
-                        child: Row(
+//                      GestureDetector(
+//                        child: Container(
+//                          color: Colors.red,
+//                          height: 60,
+//                          width: 100,
+//                          child: Text('asdasd'),
+//                        ),
+//                        onTap: ()async {
+//                          await getOrder('b24d27f6-2c70-468c-a234-2509a96deccd');
+//                          //launch("tel://+79187072154");
+//                        },
+//                      ),
+                      Expanded(
+                        child: ListView(
+                          padding: EdgeInsets.zero,
                           children: <Widget>[
-                            Flexible(
-                              flex: 0,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 0),
-                                child: InkWell(
-                                  child: Container(
-                                      height: 40,
-                                      width: 60,
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 20, bottom: 4, left: 10),
-                                          child: SvgPicture.asset(
-                                              'assets/svg_images/menu.svg')
-                                      )),
-                                  onTap: () {
-                                    _scaffoldKey.currentState.openDrawer();
-                                  },
-                                ),
-                              ),
-                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 30, bottom: 0, left: 0),
+                              child: Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 0),
+                                      child: InkWell(
+                                        child: Container(
+                                            height: 40,
+                                            width: 60,
+                                            child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 20, bottom: 4, left: 10),
+                                                child: SvgPicture.asset(
+                                                    'assets/svg_images/menu.svg')
+                                            )),
+                                        onTap: () {
+                                          _scaffoldKey.currentState.openDrawer();
+                                        },
+                                      ),
+                                    ),
+                                  ),
 //                          Flexible(
 //                            flex: 5,
 //                            child: Padding(
@@ -577,25 +593,9 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
 //                              ),
 //                            ),
 //                          ),
-                          ],
-                        ),
-                      ),
-//                      GestureDetector(
-//                        child: Container(
-//                          color: Colors.red,
-//                          height: 60,
-//                          width: 100,
-//                          child: Text('asdasd'),
-//                        ),
-//                        onTap: ()async {
-//                          await getOrder('b24d27f6-2c70-468c-a234-2509a96deccd');
-//                          //launch("tel://+79187072154");
-//                        },
-//                      ),
-                      Expanded(
-                        child: ListView(
-                          padding: EdgeInsets.zero,
-                          children: <Widget>[
+                                ],
+                              ),
+                            ),
                             FutureBuilder<List<OrderChecking>>(
                               future: OrderChecking.getActiveOrder(),
                               builder: (BuildContext context,
@@ -650,14 +650,11 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                       ),
                       (currentUser.cartDataModel.cart != null &&
                           currentUser.cartDataModel.cart.length != 0)
-                          ? Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: BasketButton(
-                        key: basketButtonStateKey,
-                        restaurant:
-                        currentUser.cartDataModel.cart[0].restaurant,
-                      ),
-                          )
+                          ? BasketButton(
+              key: basketButtonStateKey,
+              restaurant:
+              currentUser.cartDataModel.cart[0].restaurant,
+              )
                           : Visibility(
                         child: Container(height: 80),
                         visible: false,
@@ -993,7 +990,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
                         ),
                       ),
                     ),
-                    Padding(
+                    (ordersStoryModelItem.without_delivery) ? Container() : Padding(
                       padding: EdgeInsets.only(right: 5),
                       child: Container(
                         height: 70,

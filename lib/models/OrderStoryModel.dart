@@ -39,6 +39,7 @@ class OrdersStoryModelItem{
   int price;
   String state;
   Driver driver;
+  bool without_delivery;
 
   OrdersStoryModelItem( {
     this.uuid,
@@ -52,7 +53,8 @@ class OrdersStoryModelItem{
     this.state_title,
     this.own_delivery,
     this.state,
-    this.driver
+    this.driver,
+    this.without_delivery
   });
 
 
@@ -91,7 +93,8 @@ class OrdersStoryModelItem{
         state_title: parsedJson['state_title'],
         own_delivery: parsedJson['own_delivery'],
         state: parsedJson['state'],
-        driver: Driver.fromJson(parsedJson['driver'])
+        driver: Driver.fromJson(parsedJson['driver']),
+        without_delivery: parsedJson['without_delivery']
     );
   }
 
