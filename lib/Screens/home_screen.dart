@@ -650,11 +650,14 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                       ),
                       (currentUser.cartDataModel.cart != null &&
                           currentUser.cartDataModel.cart.length != 0)
-                          ? BasketButton(
+                          ? Padding(
+                            padding: const EdgeInsets.only(bottom: 15.0),
+                            child: BasketButton(
                         key: basketButtonStateKey,
                         restaurant:
                         currentUser.cartDataModel.cart[0].restaurant,
-                      )
+                      ),
+                          )
                           : Visibility(
                         child: Container(height: 80),
                         visible: false,

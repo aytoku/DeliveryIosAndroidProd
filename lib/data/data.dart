@@ -99,7 +99,7 @@ class ScreenTitlePopState extends State<ScreenTitlePop> {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
-        padding: EdgeInsets.only(top: 30),
+        padding: EdgeInsets.only(top: 40),
         child: Stack(
           children: <Widget>[
             Align(

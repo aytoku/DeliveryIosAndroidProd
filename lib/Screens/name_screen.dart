@@ -135,7 +135,7 @@ class NameScreenState extends State<NameScreen> {
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.only(
-                                bottom: 20, left: 0, right: 0, top: 0),
+                                bottom: 30, left: 0, right: 0, top: 0),
                             child: Button(
                               key: buttonStateKey,
                               color: Color(0xFFFE534F),

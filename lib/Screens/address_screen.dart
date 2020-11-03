@@ -154,7 +154,7 @@ class PageState extends State<PageScreen> {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 30, bottom: 10),
+                    padding: EdgeInsets.only(top: 40, bottom: 10),
                     child: Stack(
                       children: <Widget>[
                         Align(
@@ -353,7 +353,7 @@ class PageState extends State<PageScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(bottom: 20, left: 15, right: 15, top: 10),
+                padding: EdgeInsets.only(bottom: 25, left: 15, right: 15, top: 10),
                 child: FlatButton(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

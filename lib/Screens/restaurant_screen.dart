@@ -82,7 +82,7 @@ class RestaurantScreenState extends State<RestaurantScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 10,left: 15, right: 15, bottom: 15),
+            padding: EdgeInsets.only(top: 10,left: 15, right: 15, bottom: 25),
             child: Align(
                 alignment: Alignment.bottomCenter,
                 child: FlatButton(
@@ -298,7 +298,7 @@ class RestaurantScreenState extends State<RestaurantScreen> {
       return Column(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(top: 40, bottom: 10),
+            padding: EdgeInsets.only(top: 50, bottom: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -379,7 +379,7 @@ class RestaurantScreenState extends State<RestaurantScreen> {
           Stack(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(top: 30, bottom: 10),
+                padding: EdgeInsets.only(top: 40, bottom: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -455,8 +455,11 @@ class RestaurantScreenState extends State<RestaurantScreen> {
                 }),
               )
           ),
-          BasketButton(
-              key: basketButtonStateKey, restaurant: restaurant)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 15.0),
+            child: BasketButton(
+                key: basketButtonStateKey, restaurant: restaurant),
+          )
         ],
       ),
     );

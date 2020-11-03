@@ -25,7 +25,7 @@ class InformationScreenState extends State<InformationScreen>{
                 child: Align(
                     alignment: Alignment.topLeft,
                     child: Padding(
-                        padding: EdgeInsets.only(top:30, bottom: 0),
+                        padding: EdgeInsets.only(top:40, bottom: 0),
                         child: Container(
                             height: 50,
                             width: 60,

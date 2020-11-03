@@ -193,7 +193,7 @@ class CostErrorScreenState extends State<CostErrorScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: EdgeInsets.only(left: 0, top: 20, bottom: 10),
+                padding: EdgeInsets.only(left: 0, top: 20, bottom: 15),
                 child: FlatButton(
                   child: Text(
                     "Отправить",

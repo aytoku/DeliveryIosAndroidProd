@@ -135,7 +135,7 @@ class AboutAppScreenState extends State<AboutAppScreen> {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 20, left: 15),
+                  padding: EdgeInsets.only(bottom: 30, left: 15),
                   child: Text(
                     '@ 2011-2020 ООО «ФАЕМ.ТЕХНОЛОГИИ»',
                     style: TextStyle(color: Color(0x97979797), fontSize: 15),

@@ -120,13 +120,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"
-  facebook_sdk:
-    dependency: "direct main"
-    description:
-      name: facebook_sdk
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.7"
   fake_async:
     dependency: transitive
     description:

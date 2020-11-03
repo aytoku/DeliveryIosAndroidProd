@@ -26,7 +26,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           children: <Widget>[
             Align(
               child: Padding(
-                padding: EdgeInsets.only(top: 30, bottom: 25),
+                padding: EdgeInsets.only(top: 40, bottom: 25),
                 child: Stack(
                   children: <Widget>[
                     Align(

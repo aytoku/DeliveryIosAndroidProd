@@ -445,7 +445,7 @@ class OrdersDetailsScreenState extends State<OrdersDetailsScreen> {
         body: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 30, bottom: 10),
+              padding: EdgeInsets.only(top: 40, bottom: 10),
               child: Row(
                 children: <Widget>[
                   Flexible(

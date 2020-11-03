@@ -119,7 +119,7 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(left: 10, bottom: 15),
+              padding: EdgeInsets.only(left: 10, bottom: 25),
               child: FlatButton(
                 child: Text(
                   "Далее",

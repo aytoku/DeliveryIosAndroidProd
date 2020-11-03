@@ -353,7 +353,7 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
                 return Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 30, bottom: 10),
+                      padding: EdgeInsets.only(top: 40, bottom: 10),
                       child: Stack(
                         children: <Widget>[
                           Align(

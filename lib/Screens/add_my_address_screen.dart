@@ -44,7 +44,7 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
                   child: Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
-                          padding: EdgeInsets.only(top: 30, bottom: 25),
+                          padding: EdgeInsets.only(top: 40, bottom: 25),
                           child: Container(
                               height: 40,
                               width: 60,
@@ -198,7 +198,7 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(bottom: 25),
               child: FlatButton(
                 child: Text(
                   "Сохранить",
