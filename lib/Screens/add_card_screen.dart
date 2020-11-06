@@ -9,7 +9,7 @@ class AddCartScreen extends StatefulWidget {
   _AddCartScreenState createState() => _AddCartScreenState();
 }
 
-class _AddCartScreenState extends State<AddCartScreen> {
+class _AddCartScreenState extends State<AddCartScreen> { 
   _buildNearlyRestaurant() {
     List<Widget> restaurantList = [];
     addCart.forEach((AddCart addCart) {
