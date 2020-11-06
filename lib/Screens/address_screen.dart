@@ -526,7 +526,12 @@ class AddressScreenState extends State<AddressScreen>
     print('fagoti 2');
     _color = true;
     destinationPointsKey = new GlobalKey();
-    autoComplete = new AutoComplete(destinationPointsKey, 'Введите адрес');
+    autoComplete = new AutoComplete(destinationPointsKey, 'Введите адрес', onSelected:() {
+      addressField.text = destinationPointsKey.currentState
+          .searchTextField.textFieldConfiguration.controller
+          .text;
+      Navigator.pop(context);
+    },);
   }
 
   bool status1 = false;
@@ -633,34 +638,6 @@ class AddressScreenState extends State<AddressScreen>
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(left: 10, bottom: 15),
-              child: FlatButton(
-                child: Text(
-                  "Далее",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
-                ),
-                color: Color(0xFFFE534F),
-                splashColor: Colors.redAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                padding:
-                EdgeInsets.only(left: 100, top: 20, right: 100, bottom: 20),
-                onPressed: () async {
-                  addressField.text = destinationPointsKey.currentState
-                      .searchTextField.textFieldConfiguration.controller
-                      .text;
-                  Navigator.pop(context);
-                },
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -719,6 +696,11 @@ class AddressScreenState extends State<AddressScreen>
                       controller: addressField,
                       readOnly: true,
                       onTap: (){
+                        if(autoComplete.controller != null){
+                          print('nazaho');
+                          autoComplete.controller
+                              .text = addressField.text;
+                        }
                         _deleteButton(autoComplete);
                       },
                       focusNode: focusNode,

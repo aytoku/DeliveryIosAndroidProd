@@ -43,6 +43,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   GlobalKey<BasketButtonState> basketButtonStateKey = new GlobalKey<BasketButtonState>();
   bool _color;
+  int records_count = -1;
 
   @override
   void initState() {
@@ -271,7 +272,14 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
             print(await Internet.checkConnection());
           }));
     });
-    return Column(children: restaurantList);
+    List<Widget> childrenColumn = new List<Widget>();
+    childrenColumn.addAll(restaurantList);
+    if(restaurantList.length < records_count){
+      childrenColumn.add(
+          CircularProgressIndicator()
+      );
+    }
+    return Column(children: childrenColumn);
   }
 
   List<Widget> getSideBarItems(bool isLogged) {
@@ -500,6 +508,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
               print(snapshot.connectionState);
               if (snapshot.hasData) {
                 if (page == 1) {
+                  records_count = snapshot.data.records_count;
                   this.records_items.clear();
                 }
                 if (snapshot.data.records_count == 0) {
@@ -528,30 +537,46 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                   },
                   child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(top: 30, bottom: 0, left: 0),
-                        child: Row(
+//                      GestureDetector(
+//                        child: Container(
+//                          color: Colors.red,
+//                          height: 60,
+//                          width: 100,
+//                          child: Text('asdasd'),
+//                        ),
+//                        onTap: ()async {
+//                          await getOrder('b24d27f6-2c70-468c-a234-2509a96deccd');
+//                          //launch("tel://+79187072154");
+//                        },
+//                      ),
+                      Expanded(
+                        child: ListView(
+                          padding: EdgeInsets.zero,
                           children: <Widget>[
-                            Flexible(
-                              flex: 0,
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 0),
-                                child: InkWell(
-                                  child: Container(
-                                      height: 40,
-                                      width: 60,
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 20, bottom: 4, left: 10),
-                                          child: SvgPicture.asset(
-                                              'assets/svg_images/menu.svg')
-                                      )),
-                                  onTap: () {
-                                    _scaffoldKey.currentState.openDrawer();
-                                  },
-                                ),
-                              ),
-                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: 30, bottom: 0, left: 0),
+                              child: Row(
+                                children: <Widget>[
+                                  Flexible(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 0),
+                                      child: InkWell(
+                                        child: Container(
+                                            height: 40,
+                                            width: 60,
+                                            child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: 20, bottom: 4, left: 10),
+                                                child: SvgPicture.asset(
+                                                    'assets/svg_images/menu.svg')
+                                            )),
+                                        onTap: () {
+                                          _scaffoldKey.currentState.openDrawer();
+                                        },
+                                      ),
+                                    ),
+                                  ),
 //                          Flexible(
 //                            flex: 5,
 //                            child: Padding(
@@ -577,25 +602,9 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
 //                              ),
 //                            ),
 //                          ),
-                          ],
-                        ),
-                      ),
-//                      GestureDetector(
-//                        child: Container(
-//                          color: Colors.red,
-//                          height: 60,
-//                          width: 100,
-//                          child: Text('asdasd'),
-//                        ),
-//                        onTap: ()async {
-//                          await getOrder('b24d27f6-2c70-468c-a234-2509a96deccd');
-//                          //launch("tel://+79187072154");
-//                        },
-//                      ),
-                      Expanded(
-                        child: ListView(
-                          padding: EdgeInsets.zero,
-                          children: <Widget>[
+                                ],
+                              ),
+                            ),
                             FutureBuilder<List<OrderChecking>>(
                               future: OrderChecking.getActiveOrder(),
                               builder: (BuildContext context,
@@ -650,14 +659,11 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                       ),
                       (currentUser.cartDataModel.cart != null &&
                           currentUser.cartDataModel.cart.length != 0)
-                          ? Padding(
-                            padding: const EdgeInsets.only(bottom: 15.0),
-                            child: BasketButton(
+                          ? BasketButton(
                         key: basketButtonStateKey,
                         restaurant:
                         currentUser.cartDataModel.cart[0].restaurant,
-                      ),
-                          )
+                      )
                           : Visibility(
                         child: Container(height: 80),
                         visible: false,
@@ -816,8 +822,8 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    var processing = ['waiting_for_confirmation',
-      'transferred_to_store'];
+    var processing = ['waiting_for_confirmation'
+    ];
     var cooking_state = [
       'cooking',
       'offer_offered',
@@ -825,7 +831,9 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
       'finding_driver',
       'offer_rejected',
       'order_start',
-      'on_place'
+      'on_place',
+      'transferred_to_store',
+      'order_accepted'
     ];
     var in_the_way = ['on_the_way'];
     var take = ['order_payment'];
@@ -834,6 +842,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
       return Container();
     }
     print('ALO RABOTAI SUKA' + '' + ordersStoryModelItem.own_delivery.toString());
+    print(ordersStoryModelItem.state);
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         decoration: BoxDecoration(
@@ -993,7 +1002,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
                         ),
                       ),
                     ),
-                    Padding(
+                    (ordersStoryModelItem.without_delivery) ? Container() : Padding(
                       padding: EdgeInsets.only(right: 5),
                       child: Container(
                         height: 70,
