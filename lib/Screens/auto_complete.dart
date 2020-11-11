@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/PostData/necessary_address_data_pass.dart';
-import 'package:flutter_app/models/InitialAddressModel.dart';
 import 'package:flutter_app/models/NecessaryAddressModel.dart';
-import 'package:flutter_app/models/RecommendationAddressModel.dart';
 import 'package:flutter_app/models/ResponseData.dart';
 import 'package:flutter_app/models/last_addresses_model.dart';
 import 'package:flutter_app/models/my_addresses_model.dart';
@@ -12,56 +10,59 @@ import 'device_id_screen.dart';
 
 class AutoComplete extends StatefulWidget {
   String hint;
-  TextEditingController controller = new TextEditingController();
-  VoidCallback onSelected;
 
-  AutoComplete(Key key, this.hint, {this.onSelected}) : super(key: key);
+  AutoComplete(Key key, this.hint) : super(key: key);
 
   @override
-  AutoCompleteDemoState createState() => AutoCompleteDemoState(hint, controller, onSelected: onSelected);
+  AutoCompleteDemoState createState() => AutoCompleteDemoState(hint);
 }
 
 class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveClientMixin{
-  // Говорим, что автокомплит не хочет терять свой стейт (не помню зачем)
+  String hint;
   @override
   bool get wantKeepAlive => true;
 
-  // Подисказка
-  String hint;
-  // Событие на выбор значения в списке
-  VoidCallback onSelected;
-  // Последнее выбранное значение
-  InitialAddressModel selectedValue;
-
-
-  AutoCompleteDemoState(this.hint, this.controller, {this.onSelected});
-
-
-  // Текстовое поле для автокомплита и его контроллеры
-  TypeAheadField searchTextField;
-  TextEditingController controller;
+  AutoCompleteDemoState(this.hint);
+  TextEditingController controller = new TextEditingController();
   FocusNode node = new FocusNode();
 
-  // Получение контекстных подсказок для конкретного значения из текстфилда
-  Future<List<InitialAddressModel>> findAddress(String searchText) async {
-    // Результирующий список
-    List<InitialAddressModel> necessaryAddressDataItems;
+  TypeAheadField searchTextField;
 
+  Future<List<DestinationPoints>> getUsers(String name) async {
+    List<DestinationPoints> necessaryAddressDataItems;
     try {
-      // Если в поле автокомплита был введен текст
-      if (searchText.length > 0) {
-        // то получаем релеватные подсказки с сервера
+      if (name.length > 0) {
         necessaryAddressDataItems =
-            (await loadNecessaryAddressData(searchText)).destinationPoints;
+            (await loadNecessaryAddressData(name)).destinationPoints;
       } else {
-        // иначе получаем список рекомендаций для заполнения с того же сервера
-        List<RecommendationAddressModel> temp = await RecommendationAddress.getRecommendations("target");
-        // который загоняем в подсказски автокомплита
-        necessaryAddressDataItems = temp.map<InitialAddressModel>((item) => item.address).toList();
+        // Вывод фаворитных адресов
+        List<MyAddressesModel> temp = await MyAddressesModel.getAddresses();
+        necessaryAddressDataItems = new List<DestinationPoints>();
+        // Бежим по фаворитным адресам
+        for (int i = 0; i < temp.length; i++) {
+          var element = temp[i];
+          // Получаем адрес с серва
+          NecessaryAddressData necessaryAddressData =
+          await loadNecessaryAddressData(element.address);
+          // Если на серве есть такой адрес
+          if(necessaryAddressData.destinationPoints.length > 0){
+            necessaryAddressData.destinationPoints[0].comment = element.comment;
+            necessaryAddressData.destinationPoints[0].name = element.name;
+            necessaryAddressDataItems
+                .add(necessaryAddressData.destinationPoints[0]);
+          }else{
+            necessaryAddressDataItems.add(new DestinationPoints(
+                street: element.address, house: '', comment: temp[i].comment, name: element.name));
+          }
+        }
+
+        // Вывод последних адресов
+        List<DestinationPoints> last_dp = await LastAddressesModel.getAddresses();
+        necessaryAddressDataItems.addAll(last_dp);
       }
-    }
-    catch (e) {
-      print("Error getting addresses.");
+      print(necessaryAddressDataItems[0].unrestricted_value);
+    } catch (e) {
+      print("Error getting users.");
     } finally {
       return necessaryAddressDataItems;
     }
@@ -69,17 +70,17 @@ class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveC
 
   @override
   void initState() {
+    //getUsers('');
     super.initState();
   }
 
-
-  Widget row(InitialAddressModel address) {
+  Widget row(DestinationPoints user) {
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Padding(
         padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
         child: Text(
-          address.name != null && address.name != '' && address.name != " " ? address.name : address.unrestrictedValue,
+          user.name != null && user.name != '' ? user.name : user.unrestricted_value,
           //user.unrestricted_value,
           style: TextStyle(fontSize: 16.0, decoration: TextDecoration.none),
           textAlign: TextAlign.start,
@@ -90,7 +91,6 @@ class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveC
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Theme(
@@ -118,10 +118,8 @@ class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveC
                 ),
               ),
               suggestionsCallback: (pattern) async {
-                print('autocomplite');
-                return await findAddress(pattern);
+                return await getUsers(pattern);
               },
-              keepSuggestionsOnSuggestionSelected: true,
               loadingBuilder: (BuildContext context) {
                 return Center(
                   child: CircularProgressIndicator(),
@@ -132,22 +130,19 @@ class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveC
               itemBuilder: (context, suggestion) {
                 print('vi zaebali menya ispolzovat postoyanno fagoti');
                 return row(suggestion);
+                return ListTile(
+                  leading: Icon(Icons.shopping_cart),
+                  title: Text(suggestion['name']),
+                  subtitle: Text('\$${suggestion['price']}'),
+                );
               },
-              onSuggestionSelected: (suggestion) { // При выборе значения из списка
-                // Переносим это значение в текстфилд
-                controller.text =(suggestion as InitialAddressModel).unrestrictedValue;
-                // и фиксируем его, как последнее выбранное
-                selectedValue = (suggestion as InitialAddressModel);
+              onSuggestionSelected: (suggestion) {
+                print('asdasdasdadasd');
+                controller.text =(suggestion as DestinationPoints).unrestricted_value;
                 //FocusScope.of(context).unfocus();
-
-                // Избегаем потери фокуса и ставим курсор в конец
                 node.requestFocus();
+                print(controller.text.length);
                 controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
-
-                // Если было передано дополнительное событие, то вызываем его
-                if(onSelected != null){
-                  onSelected();
-                }
               },
             )
         ),
