@@ -77,6 +77,6 @@ class CreateOrderTakeAway {
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
-    print(response.body + 'tutu');
+    print(response.body);
   }
 }

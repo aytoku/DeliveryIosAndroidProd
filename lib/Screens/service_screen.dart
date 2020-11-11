@@ -28,7 +28,7 @@ class ServiceScreenState extends State<ServiceScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(top: 40),
+                padding: EdgeInsets.only(top: 30),
                 child: Stack(
                   children: <Widget>[
                     Align(

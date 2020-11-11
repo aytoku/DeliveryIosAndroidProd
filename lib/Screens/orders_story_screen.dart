@@ -232,7 +232,7 @@ class OrdersStoryScreenState extends State<OrdersStoryScreen> {
               padding: EdgeInsets.only(top: 10, left: 15),
               child: Text(
                 (restaurantDataItems.store != null)
-                    ? restaurantDataItems.routes[0].unrestricted_value
+                    ? restaurantDataItems.routes[0].unrestrictedValue
                     : 'Пусто',
                 style: TextStyle(
                   fontSize: 17.0,
@@ -246,7 +246,7 @@ class OrdersStoryScreenState extends State<OrdersStoryScreen> {
               padding: EdgeInsets.only(top: 10, left: 15),
               child: Text(
                 (restaurantDataItems.store != null)
-                    ? restaurantDataItems.routes[1].unrestricted_value
+                    ? restaurantDataItems.routes[1].unrestrictedValue
                     : 'Пусто',
                 style: TextStyle(
                   fontSize: 17.0,

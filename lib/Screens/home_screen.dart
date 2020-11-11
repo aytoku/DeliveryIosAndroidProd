@@ -25,6 +25,8 @@ import 'auth_screen.dart';
 import 'infromation_screen.dart';
 import 'my_addresses_screen.dart';
 import 'orders_story_screen.dart';
+import 'payments_methods_screen.dart';
+import 'payments_methods_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen() : super(key: homeScreenKey);
@@ -43,6 +45,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   GlobalKey<BasketButtonState> basketButtonStateKey = new GlobalKey<BasketButtonState>();
   bool _color;
+  int records_count = -1;
 
   @override
   void initState() {
@@ -271,7 +274,14 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
             print(await Internet.checkConnection());
           }));
     });
-    return Column(children: restaurantList);
+    List<Widget> childrenColumn = new List<Widget>();
+    childrenColumn.addAll(restaurantList);
+    if(restaurantList.length < records_count){
+      childrenColumn.add(
+          CircularProgressIndicator()
+      );
+    }
+    return Column(children: childrenColumn);
   }
 
   List<Widget> getSideBarItems(bool isLogged) {
@@ -336,17 +346,23 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
             },
           ),
         ),
-//              ListTile(
-//                title: Text('Способы оплаты'),
-//                onTap: (){
-//                  Navigator.push(
-//                    context,
-//                    new MaterialPageRoute(
-//                      builder: (context) => new PaymentsMethodsScreen(),
-//                    ),
-//                  );
-//                },
-//              ),
+        // ListTile(
+        //   title: Text('Способы оплаты',
+        //   style: TextStyle(
+        //       fontSize: 17, color: Color(0xFF424242), letterSpacing: 0.45)),
+        //   onTap: () async {
+        //     if (await Internet.checkConnection()) {
+        //       Navigator.push(
+        //         context,
+        //         new MaterialPageRoute(
+        //           builder: (context) => new PaymentsMethodsScreen(),
+        //         ),
+        //       );
+        //     } else {
+        //       noConnection(context);
+        //     }
+        //   },
+        // ),
         ListTile(
           title: Padding(
             padding: EdgeInsets.only(top: 20, bottom: 20),
@@ -500,6 +516,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
               print(snapshot.connectionState);
               if (snapshot.hasData) {
                 if (page == 1) {
+                  records_count = snapshot.data.records_count;
                   this.records_items.clear();
                 }
                 if (snapshot.data.records_count == 0) {
@@ -651,10 +668,10 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                       (currentUser.cartDataModel.cart != null &&
                           currentUser.cartDataModel.cart.length != 0)
                           ? BasketButton(
-              key: basketButtonStateKey,
-              restaurant:
-              currentUser.cartDataModel.cart[0].restaurant,
-              )
+                        key: basketButtonStateKey,
+                        restaurant:
+                        currentUser.cartDataModel.cart[0].restaurant,
+                      )
                           : Visibility(
                         child: Container(height: 80),
                         visible: false,
@@ -813,8 +830,8 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    var processing = ['waiting_for_confirmation',
-      'transferred_to_store'];
+    var processing = ['waiting_for_confirmation'
+    ];
     var cooking_state = [
       'cooking',
       'offer_offered',
@@ -822,7 +839,9 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
       'finding_driver',
       'offer_rejected',
       'order_start',
-      'on_place'
+      'on_place',
+      'transferred_to_store',
+      'order_accepted'
     ];
     var in_the_way = ['on_the_way'];
     var take = ['order_payment'];
@@ -831,6 +850,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
       return Container();
     }
     print('ALO RABOTAI SUKA' + '' + ordersStoryModelItem.own_delivery.toString());
+    print(ordersStoryModelItem.state);
     return Container(
         margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         decoration: BoxDecoration(

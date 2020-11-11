@@ -241,7 +241,7 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
               padding: EdgeInsets.only(top: 10, left: 15),
               child: Text(
                 (restaurantDataItems.store != null)
-                    ? restaurantDataItems.routes[0].unrestricted_value
+                    ? restaurantDataItems.routes[0].unrestrictedValue
                     : 'Пусто',
                 style: TextStyle(
                   fontSize: 17.0,
@@ -255,7 +255,7 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
               padding: EdgeInsets.only(top: 10, left: 15),
               child: Text(
                 (restaurantDataItems.store != null)
-                    ? restaurantDataItems.routes[1].unrestricted_value
+                    ? restaurantDataItems.routes[1].unrestrictedValue
                     : 'Пусто',
                 style: TextStyle(
                   fontSize: 17.0,
@@ -353,7 +353,7 @@ class ServiceOrdersStoryScreenState extends State<ServiceOrdersStoryScreen> {
                 return Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(top: 40, bottom: 10),
+                      padding: EdgeInsets.only(top: 30, bottom: 10),
                       child: Stack(
                         children: <Widget>[
                           Align(

@@ -7,7 +7,7 @@ import 'my_addresses_screen.dart';
 
 // ignore: must_be_immutable
 class AddMyAddressScreen extends StatefulWidget {
-  MyAddressesModel myAddressesModel;
+  MyFavouriteAddressesModel myAddressesModel;
 
   AddMyAddressScreen({Key key, this.myAddressesModel}) : super(key: key);
 
@@ -19,7 +19,7 @@ class AddMyAddressScreen extends StatefulWidget {
 class AddMyAddressScreenState extends State<AddMyAddressScreen> {
   bool status1 = false;
   String name;
-  MyAddressesModel myAddressesModel;
+  MyFavouriteAddressesModel myAddressesModel;
 
   AddMyAddressScreenState(this.myAddressesModel);
 
@@ -29,7 +29,7 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
   @override
   Widget build(BuildContext context) {
     nameField.text = myAddressesModel.name;
-    commentField.text = myAddressesModel.comment;
+    commentField.text = myAddressesModel.description;
     // TODO: implement build
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -44,7 +44,7 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
                   child: Align(
                       alignment: Alignment.topLeft,
                       child: Padding(
-                          padding: EdgeInsets.only(top: 40, bottom: 25),
+                          padding: EdgeInsets.only(top: 30, bottom: 25),
                           child: Container(
                               height: 40,
                               width: 60,
@@ -58,6 +58,7 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
                     Navigator.pop(context);
                   },
                 ),
+                (myAddressesModel.uuid != null && myAddressesModel.uuid != "") ?
                 GestureDetector(
                   child: Align(
                       alignment: Alignment.topRight,
@@ -73,21 +74,17 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
                       )),
                   onTap: () async {
                     if (await Internet.checkConnection()) {
-                      List<MyAddressesModel> list =
-                      await MyAddressesModel.getAddresses();
-                      list.remove(myAddressesModel);
-                      await MyAddressesModel.saveData();
-                      Navigator.push(
-                        context,
-                        new MaterialPageRoute(builder: (context) {
-                          return new MyAddressesScreen();
-                        }),
-                      );
+                      await myAddressesModel.delete();
+                      Navigator.pushAndRemoveUntil(context,
+                          new MaterialPageRoute(builder: (context) => new MyAddressesScreen()),
+                              (route) => route.isFirst);
                     } else {
                       noConnection(context);
                     }
                   },
                 )
+                    :
+                Container(height: 0,width: 0)
               ],
             ),
           ),
@@ -131,7 +128,7 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: EdgeInsets.only(top: 30, left: 15, right: 15),
-                      child: Text(myAddressesModel.address,
+                      child: Text(myAddressesModel.address.unrestrictedValue,
                           style: TextStyle(fontSize: 17, color: Color(0xFF424242))),
                     ),
                   ),
@@ -198,7 +195,7 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: EdgeInsets.only(bottom: 25),
+              padding: EdgeInsets.only(bottom: 20),
               child: FlatButton(
                 child: Text(
                   "Сохранить",
@@ -216,16 +213,13 @@ class AddMyAddressScreenState extends State<AddMyAddressScreen> {
                 EdgeInsets.only(left: 100, top: 20, right: 100, bottom: 20),
                 onPressed: () async {
                   if (await Internet.checkConnection()) {
-                    Navigator.push(
-                      context,
-                      new MaterialPageRoute(builder: (context) {
-                        myAddressesModel.type = MyAddressesType.home;
-                        myAddressesModel.name = nameField.text;
-                        myAddressesModel.comment = commentField.text;
-                        MyAddressesModel.saveData();
-                        return new MyAddressesScreen();
-                      }),
-                    );
+                    myAddressesModel.tag = "house";
+                    myAddressesModel.name = nameField.text;
+                    myAddressesModel.description = commentField.text;
+                    await myAddressesModel.ifNoBrainsSave();
+                    Navigator.pushAndRemoveUntil(context,
+                        new MaterialPageRoute(builder: (context) => new MyAddressesScreen()),
+                            (route) => route.isFirst);
                   } else {
                     noConnection(context);
                   }

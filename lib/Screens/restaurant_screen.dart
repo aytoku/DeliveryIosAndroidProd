@@ -7,6 +7,7 @@ import 'package:flutter_app/models/ResponseData.dart';
 import 'package:flutter_app/models/RestaurantDataItems.dart';
 import 'package:flutter_app/models/food.dart';
 import 'package:flutter_app/models/order.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import '../models/RestaurantDataItems.dart';
 import '../models/RestaurantDataItems.dart';
@@ -30,7 +31,9 @@ class RestaurantScreenState extends State<RestaurantScreen> {
   CategoryList categoryList; // Виджет с категориями еды
   // (для подгрузки ВПЕРЕД по клику по категории)
   ScrollController foodScrollController = new ScrollController(); // Скролл контроллер для хавки
-  List<MenuItem> food_menu_items = new List<MenuItem>(); // Виджеты с хавкой
+  List<MenuItem> foodMenuItems = new List<MenuItem>(); // Виджеты с хавкой
+  List<MenuItemTitle> foodMenuTitles = new List<MenuItemTitle>(); // Тайтлы категорий
+  List<Widget> menuWithTitles = new List<Widget>();
   int load_category_index = 0; // Индекс подгружаемой категории (няряду с page)
   // Конец добавленных мной глобалок
   int page = 1;
@@ -255,28 +258,64 @@ class RestaurantScreenState extends State<RestaurantScreen> {
     super.initState();
     // Инициализируем список категорий
     categoryList = new CategoryList(key: new GlobalKey<CategoryListState>(), restaurant: restaurant, parent: this);
+    int offset = 21;
     // Навешиваем лисенер на скролл контроллер
     foodScrollController.addListener(() {
       // Примерная высота одного элемента хавки
       int item_height = 225;
+      int title_height  = 21;
+      List<int> categoryTitlesHeight = new List<int>();
+      restaurant.product_category.forEach((element) {
+        categoryTitlesHeight.add(21);
+      });
+
       // Вычисляем точную высоту одного элемента хавки
-      if(food_menu_items.length>0 && food_menu_items[0].key.currentContext != null)
-        item_height =food_menu_items[0].key.currentContext.size.height.round();
+      if(foodMenuItems.length>0 && foodMenuItems[0].key.currentContext != null) {
+        item_height = foodMenuItems[0].key.currentContext.size.height.round();
+      }
+
+      // Вычисляем точную высоту одного заголовка
+      if(foodMenuTitles.length>0 && foodMenuTitles[0].key.currentContext != null) {
+        title_height = foodMenuTitles[0].key.currentContext.size.height.round();
+      }
 
       if(!isLoading){
         // Используя силу математики, находим индекс хавки, на которую сейчас
         // смотрим
-        int ind = (foodScrollController.position.pixels~/item_height)*2;
+        int ind = ((foodScrollController.position.pixels-offset+21)~/item_height)*2;
         // Если: у нас не пустой список еды, индекс подходит по верхней
         // и нижней границе листа, а также существует стейт элемента хавки, на который мы смотрим
-        if(food_menu_items.length > 0 && ind < food_menu_items.length && ind >= 0 && food_menu_items[ind].key.currentState != null) {
+        if(foodMenuItems.length > 0 && ind < foodMenuItems.length && ind >= 0 && foodMenuItems[ind].key.currentState != null) {
           // Если категория выбранная категория изменилась
-          if (categoryList.key.currentState.currentCategory !=
-              food_menu_items[ind].key.currentState
-                  .restaurantDataItems.category) {
+          String selectedCategory = categoryList.key.currentState.currentCategory;
+          String currentCategory = foodMenuItems[ind].key.currentState
+              .restaurantDataItems.category;
+          if (selectedCategory != currentCategory) {
+
+            // Вычисляем сдвиг индекса относительно заголовков категорий
+            int selectedCategoryIndex = restaurant.product_category.indexOf(selectedCategory); // Выбранная категория в списке
+            int currentCategoryIndex = restaurant.product_category.indexOf(currentCategory); // Вычисленная текущая категория
+            if(currentCategoryIndex > selectedCategoryIndex){
+              for(int i = currentCategoryIndex+1; i<=selectedCategoryIndex; i++){
+                offset +=(foodMenuTitles.length>0 && foodMenuTitles[0].key.currentContext != null)
+                    ?
+                foodMenuTitles[i].key.currentContext.size.height.round()
+                    :
+                21;
+              }
+            } else {
+              for(int i = selectedCategoryIndex; i<currentCategoryIndex; i++){
+                offset -=(foodMenuTitles.length>0 && foodMenuTitles[0].key.currentContext != null)
+                    ?
+                foodMenuTitles[i].key.currentContext.size.height.round()
+                    :
+                21;
+              }
+            }
+            // Вычислили
+
             // Выбираем категорию и скроллим сам список категорий к ней
-            categoryList.key.currentState.SelectCategory(food_menu_items[ind].key.currentState
-                .restaurantDataItems.category);
+            categoryList.key.currentState.SelectCategory(currentCategory);
             categoryList.key.currentState.ScrollToSelectedCategory();
           }
         }
@@ -370,7 +409,10 @@ class RestaurantScreenState extends State<RestaurantScreen> {
     }
 
 
-    food_menu_items.addAll(MenuItem.fromFoodRecordsList(restaurantDataItems.records, this));
+    foodMenuItems.addAll(MenuItem.fromFoodRecordsList(restaurantDataItems.records, this));
+    foodMenuTitles.addAll(MenuItemTitle.fromCategoryList(restaurant.product_category));
+    menuWithTitles = generateMenu();
+
     return Container(
       color: Colors.white,
       child: Column(
@@ -442,24 +484,55 @@ class RestaurantScreenState extends State<RestaurantScreen> {
             child: Divider(color: Color(0xFFEEEEEE), height: 1,),
           ),
           Expanded(
-              child:  GridView.count(
+              child: new StaggeredGridView.countBuilder(
+                controller: foodScrollController,
                 padding: EdgeInsets.only(left: 10.0, right: 10, bottom: 0),
                 crossAxisCount: 2,
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 10.0,
-                childAspectRatio: 0.65,
-                controller: foodScrollController,
-                children: List.generate(food_menu_items.length, (index) {
-                  // Выводим итем хавки
-                  return food_menu_items[index];
-                }),
+                itemCount: menuWithTitles.length,
+                itemBuilder: (BuildContext context, int index) => menuWithTitles[index],
+                staggeredTileBuilder: (int index) {
+                  if(menuWithTitles[index] is MenuItemTitle)
+                    return new StaggeredTile.count(2, 0.17);
+                  return new StaggeredTile.count(1, 1.5);
+                },
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 8.0,
               )
           ),
+          // Expanded(
+          //     child:  GridView.count(
+          //       padding: EdgeInsets.only(left: 10.0, right: 10, bottom: 0),
+          //       crossAxisCount: 2,
+          //       mainAxisSpacing: 8.0,
+          //       crossAxisSpacing: 10.0,
+          //       childAspectRatio: 0.65,
+          //       controller: foodScrollController,
+          //       children: List.generate(food_menu_items.length, (index) {
+          //         // Выводим итем хавки
+          //         return food_menu_items[index];
+          //       }),
+          //     )
+          // ),
           BasketButton(
               key: basketButtonStateKey, restaurant: restaurant),
         ],
       ),
     );
+  }
+
+  List<Widget> generateMenu() {
+    List<Widget> menu = new List<Widget>();
+    String lastCategoryName = "";
+    int lastCategoryIndex = -1;
+    foodMenuItems.forEach((foodMenuItem) {
+      if(foodMenuItem.restaurantDataItems.category != lastCategoryName){
+        lastCategoryIndex++;
+        lastCategoryName = foodMenuItem.restaurantDataItems.category;
+        menu.add(foodMenuTitles[lastCategoryIndex]);
+      }
+      menu.add(foodMenuItem);
+    });
+    return menu;
   }
 
   @override
@@ -492,21 +565,65 @@ class RestaurantScreenState extends State<RestaurantScreen> {
       return false;
     isLoading = true;
     // находим итем с данной категорией
-    for(int i = 0; i<food_menu_items.length;i++) {
-      var item = food_menu_items[i];
-      if(item.restaurantDataItems.category == restaurant.product_category[categoryIndex]){
-        while(item.key.currentContext == null) {
-          await foodScrollController.animateTo(foodScrollController.offset+200, duration: new Duration(milliseconds: 15),
-              curve: Curves.ease);
-        }
-        // джампаем к нему
-        await Scrollable.ensureVisible(item.key.currentContext, duration: new Duration(milliseconds: 100),
+    MenuItemTitle targetCategory = menuWithTitles.firstWhere((element) => element is MenuItemTitle && element.title == restaurant.product_category[categoryIndex]);
+    if(targetCategory != null){
+      while(targetCategory.key.currentContext == null) {
+        await foodScrollController.animateTo(foodScrollController.offset+200, duration: new Duration(milliseconds: 15),
             curve: Curves.ease);
-        break;
       }
+      // джампаем к нему
+
+      await Scrollable.ensureVisible(targetCategory.key.currentContext, duration: new Duration(milliseconds: 100),
+          curve: Curves.ease);
     }
     isLoading = false;
     return true;
+  }
+}
+
+
+class MenuItemTitle extends StatefulWidget {
+  MenuItemTitle({
+    this.key,
+    this.title,
+  }) : super(key: key);
+  final String  title;
+  final GlobalKey<MenuItemTitleState> key;
+
+  @override
+  MenuItemTitleState createState() {
+    return new MenuItemTitleState(title);
+  }
+
+  static List<MenuItemTitle> fromCategoryList(List<String> categories){
+    List<MenuItemTitle> result = new List<MenuItemTitle>();
+    categories.forEach((element) {
+      result.add(new MenuItemTitle(key: new GlobalKey<MenuItemTitleState>(), title: element,));
+    });
+    return result;
+  }
+}
+
+class MenuItemTitleState extends State<MenuItemTitle> with AutomaticKeepAliveClientMixin{
+  final String  title;
+  @override
+  bool get wantKeepAlive => true;
+
+  MenuItemTitleState(this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(title,
+      style: TextStyle(
+          color: Color(0xFF424242),
+          fontSize: 21,
+          fontWeight: FontWeight.bold
+      ),
+    );
+  }
+
+  void refresh() {
+    setState(() {});
   }
 }
 
@@ -1642,5 +1759,4 @@ class MenuItemState extends State<MenuItem> with AutomaticKeepAliveClientMixin{
       ),
     );
   }
-
 }

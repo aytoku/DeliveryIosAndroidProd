@@ -1,3 +1,5 @@
+import 'package:flutter_app/models/InitialAddressModel.dart';
+
 class DeliveryResponseData {
   List<Records> records;
   int records_count;
@@ -179,82 +181,84 @@ class WorkSchedule{
   }
 }
 
-class DestinationPoints{
+
+class DestinationPoints extends InitialAddressModel{
   String uuid;
   String point_type;
-  String unrestricted_value;
-  String value;
-  String country;
-  String region;
-  String region_type;
   String type;
-  String city;
   String category;
-  String city_type;
-  String street;
-  String street_type;
-  String street_with_type;
-  String house;
   int front_door;
-  String comment;
-  bool out_of_town;
   String house_type;
   int accuracy_level;
-  int radius;
-  double lat;
-  double lon;
-  String name;
-
+  num min;
   DestinationPoints( {
     this.uuid,
     this.point_type,
-    this.unrestricted_value,
-    this.value,
-    this.country,
-    this.region,
-    this.region_type,
     this.type,
-    this.city,
     this.category,
-    this.city_type,
-    this.street,
-    this.street_type,
-    this.street_with_type,
-    this.house,
     this.front_door,
-    this.comment,
-    this.out_of_town,
-    this.house_type,
-    this.accuracy_level,
-    this.radius,
-    this.lat,
-    this.lon,
-    this.name
-  });
+    String unrestrictedValue,
+    String value,
+    String country,
+    String region,
+    String regionType,
+    String city,
+    String cityType,
+    String street,
+    String streetType,
+    String streetWithType,
+    String house,
+    bool outOfTown,
+    String houseType,
+    int accuracyLevel,
+    int radius,
+    double lat,
+    double lon,
+    String comment
+  }):super(
+      unrestrictedValue: unrestrictedValue,
+      value: value,
+      country: country,
+      region: region,
+      regionType: regionType,
+      city: city,
+      cityType: cityType,
+      street: street,
+      streetType: streetType,
+      streetWithType: streetWithType,
+      house: house,
+      outOfTown: outOfTown,
+      houseType: houseType,
+      accuracyLevel: accuracyLevel,
+      radius: radius,
+      lat: lat,
+      lon: lon,
+      comment: comment
+  );
 
   factory DestinationPoints.fromJson(Map<String, dynamic> parsedJson){
 
     return DestinationPoints(
       uuid:parsedJson['uuid'],
       point_type:parsedJson['point_type'],
-      unrestricted_value:parsedJson['unrestricted_value'],
+      unrestrictedValue:parsedJson['unrestricted_value'],
       value:parsedJson['value'],
       country:parsedJson['country'],
       region:parsedJson['region'],
-      region_type:parsedJson['region_type'],
+      regionType:parsedJson['region_type'],
       type:parsedJson['type'],
       city:parsedJson['city'],
       category:parsedJson['category'],
-      city_type:parsedJson['city_type'],
+      cityType:parsedJson['city_type'],
       street:parsedJson['street'],
-      street_type:parsedJson['street_type'],
-      street_with_type:parsedJson['street_with_type'],
+      streetType:parsedJson['street_type'],
+      streetWithType:parsedJson['street_with_type'],
       house:parsedJson['house'],
       front_door:parsedJson['front_door'],
       comment:parsedJson['comment'],
-      out_of_town:parsedJson['out_of_town'],
-      house_type:parsedJson['house_type'],
-      accuracy_level:parsedJson['accuracy_level'],
+      outOfTown:parsedJson['out_of_town'],
+      houseType:parsedJson['house_type'],
+      accuracyLevel:parsedJson['accuracy_level'],
       radius:parsedJson['radius'],
       lat:parsedJson['lat'],
       lon:parsedJson['lon'],
@@ -266,22 +270,22 @@ class DestinationPoints{
     temp = {
       'uuid': uuid,
       'point_type':point_type,
-      'unrestricted_value':unrestricted_value,
+      'unrestricted_value':unrestrictedValue,
       'value':value,
       'country':country,
       'region':region,
-      'region_type':region_type,
+      'region_type':regionType,
       'type':type,
       'city':city,
       'category':category,
-      'city_type':city_type,
+      'city_type':cityType,
       'street':street,
-      'street_type':street_type,
-      'street_with_type':street_with_type,
+      'street_type':streetType,
+      'street_with_type':streetWithType,
       'house':house,
       'front_door':front_door,
       'comment':comment,
-      'out_of_town':out_of_town,
+      'out_of_town':outOfTown,
       'house_type':house_type,
       'accuracy_level':accuracy_level,
       'radius':radius,
