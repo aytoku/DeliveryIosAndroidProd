@@ -539,7 +539,7 @@ class _CartScreenState extends State<CartScreen> {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding:
-                  EdgeInsets.only(top: 15, right: 15, left: 15, bottom: 25),
+                  EdgeInsets.only(top: 15, right: 15, left: 15, bottom: 15),
                   child: FlatButton(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -876,7 +876,7 @@ class EmptyCartScreenState extends State<EmptyCartScreen> {
                   decoration: BoxDecoration(color: Colors.white),
                   child: Padding(
                     padding:
-                    EdgeInsets.only(bottom: 25, left: 15, right: 15, top: 15),
+                    EdgeInsets.only(bottom: 15, left: 15, right: 15, top: 15),
                     child: FlatButton(
                       child: Text(
                         'Вернуться на главную',
