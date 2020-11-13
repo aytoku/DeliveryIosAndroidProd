@@ -290,7 +290,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
         title: Padding(
           padding: EdgeInsets.only(top: 20, bottom: 20),
           child: Text(
-            'Инфоромация',
+            'Информация',
             style: TextStyle(
                 fontSize: 17, color: Color(0xFF424242), letterSpacing: 0.45),
           ),

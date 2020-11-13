@@ -271,7 +271,7 @@ class PageState extends State<PageScreen> {
     Navigator.of(context).push(
         MaterialPageRoute(
             builder: (context) => WebView(
-              initialUrl: "https://delivery-stage.faem.ru/payment-widget.html?amount=$totalPrice",
+              initialUrl: "https://eda.faem.ru/payment-widget.html?amount=$totalPrice",
               javascriptMode: JavascriptMode.unrestricted,
               onWebViewCreated: (WebViewController webController){
                 Timer _timer;
@@ -286,7 +286,7 @@ class PageState extends State<PageScreen> {
                     String url = await webController.currentUrl();
                     print(url);
 
-                    if(url == 'https://delivery-stage.faem.ru/payment-widget.html?status=success'){
+                    if(url == 'https://eda.faem.ru/payment-widget.html?status=success'){
                       if(selectedPageId == 0)
                         await createOrder.sendData();
                       else
@@ -299,7 +299,7 @@ class PageState extends State<PageScreen> {
                               builder: (context) => HomeScreen()),
                               (Route<dynamic> route) => false);
                       _timer.cancel();
-                    }else if(url == 'https://delivery-stage.faem.ru/payment-widget.html?status=fail'){
+                    }else if(url == 'https://eda.faem.ru/payment-widget.html?status=fail'){
                       Navigator.pop(context);
                       // Выводим ошибку
                       showPaymentAlertDialog(context);
