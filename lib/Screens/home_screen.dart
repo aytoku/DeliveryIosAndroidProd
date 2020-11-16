@@ -310,7 +310,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
       ),
     ];
 
-    if (isLogged) {
+    if (isLogged) { 
       allSideBarItems.insertAll(0, [
         Padding(
           padding: EdgeInsets.only(top: 60),
