@@ -287,6 +287,7 @@ class PageState extends State<PageScreen> {
                     print(url);
 
                     if(url == 'https://eda.faem.ru/payment-widget.html?status=success'){
+                      _timer.cancel();
                       if(selectedPageId == 0)
                         await createOrder.sendData();
                       else
@@ -319,17 +320,6 @@ class PageState extends State<PageScreen> {
               },
             ))
     );
-
-
-    // Navigator.of(context).push(
-    //     MaterialPageRoute(
-    //         builder: (context) => WebviewScaffold(
-    //           url: 'https://delivery-stage.faem.ru/payment-widget.html?amount=$totalPrice',
-    //           withZoom: true,
-    //           withLocalStorage: true,
-    //           hidden: true,
-    //           )),
-    //         );
   }
 
   @override
@@ -667,6 +657,7 @@ class PageState extends State<PageScreen> {
                               restaurant: restaurant);
                           if(selectedPaymentId == 1){
                             _cardPayment(totalPrice);
+                            return;
                           }
                           await createOrderTakeAway.sendData();
                         }
