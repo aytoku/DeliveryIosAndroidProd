@@ -2,14 +2,11 @@ import 'package:flutter_app/data/data.dart';
 import 'package:flutter_app/models/CreateOrderModel.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import '../models/TicketModel.dart';
 
-Future<TicketsList> getTicketsByFilter(int page, int limit, String clientPhone, {String status}) async {
 
-  TicketsList serviceModel = null;
+Future<String> getCentrifugoToken() async {
   await CreateOrder.sendRefreshToken();
-  var url = (status == null) ? 'https://crm.apis.prod.faem.pro/api/v2/tickets/filter?page=$page&limit=$limit&clientphone=$clientPhone'
-      : 'https://crm.apis.prod.faem.pro/api/v2/tickets/filter?page=$page&limit=$limit&clientphone=$clientPhone&status=$status';
+  var url = 'https://notifier.apis.prod.faem.pro/api/v2/connectiontoken';
   var response = await http.get(url, headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',
     'Accept': 'application/json',
@@ -17,13 +14,10 @@ Future<TicketsList> getTicketsByFilter(int page, int limit, String clientPhone, 
     'Authorization':'Bearer ' + authCodeData.token
   });
   if (response.statusCode == 200) {
-
-    print(response.body);
     var jsonResponse = convert.jsonDecode(response.body);
-    serviceModel = TicketsList.fromJson(jsonResponse);
+    return jsonResponse['token'];
   } else {
     print('Request failed with status: ${response.statusCode}.');
+    return '';
   }
-  print(response.body);
-  return serviceModel;
 }

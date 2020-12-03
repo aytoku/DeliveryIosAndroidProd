@@ -5,6 +5,7 @@ import 'package:flutter_app/PostData/restaurant_items_data_pass.dart';
 import 'package:flutter_app/data/data.dart';
 import 'package:flutter_app/models/ResponseData.dart';
 import 'package:flutter_app/models/RestaurantDataItems.dart';
+import 'package:flutter_app/models/amplitude.dart';
 import 'package:flutter_app/models/food.dart';
 import 'package:flutter_app/models/order.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -256,6 +257,10 @@ class RestaurantScreenState extends State<RestaurantScreen> {
   @override
   void initState() {
     super.initState();
+
+    AmplitudeAnalytics.analytics.logEvent('open_restaurant', eventProperties: {
+      'uuid': restaurant.uuid,
+    });
     // Инициализируем список категорий
     categoryList = new CategoryList(key: new GlobalKey<CategoryListState>(), restaurant: restaurant, parent: this);
     int offset = 21;
@@ -389,13 +394,13 @@ class RestaurantScreenState extends State<RestaurantScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+            padding: const EdgeInsets.only(top: 0.0, bottom: 0),
+            child: Divider(color: Color(0xFFEEEEEE), height: 0,),
           ),
           _buildFoodCategoryList(),
           Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+            padding: const EdgeInsets.only(top: 0.0, bottom: 0),
+            child: Divider(color: Color(0xFFEEEEEE), height: 0,),
           ),
           Align(
             alignment: Alignment.center,
@@ -475,13 +480,13 @@ class RestaurantScreenState extends State<RestaurantScreen> {
             ],
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+            padding: const EdgeInsets.only(top: 0.0, bottom: 0),
+            child: Divider(color: Color(0xFFEEEEEE), height: 0,),
           ),
           _buildFoodCategoryList(),
           Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-            child: Divider(color: Color(0xFFEEEEEE), height: 1,),
+            padding: const EdgeInsets.only(top: 0.0, bottom: 0),
+            child: Divider(color: Color(0xFFEEEEEE), height: 0,),
           ),
           Expanded(
               child: new StaggeredGridView.countBuilder(
@@ -499,20 +504,6 @@ class RestaurantScreenState extends State<RestaurantScreen> {
                 crossAxisSpacing: 8.0,
               )
           ),
-          // Expanded(
-          //     child:  GridView.count(
-          //       padding: EdgeInsets.only(left: 10.0, right: 10, bottom: 0),
-          //       crossAxisCount: 2,
-          //       mainAxisSpacing: 8.0,
-          //       crossAxisSpacing: 10.0,
-          //       childAspectRatio: 0.65,
-          //       controller: foodScrollController,
-          //       children: List.generate(food_menu_items.length, (index) {
-          //         // Выводим итем хавки
-          //         return food_menu_items[index];
-          //       }),
-          //     )
-          // ),
           BasketButton(
               key: basketButtonStateKey, restaurant: restaurant),
         ],
@@ -613,7 +604,7 @@ class MenuItemTitleState extends State<MenuItemTitle> with AutomaticKeepAliveCli
 
   @override
   Widget build(BuildContext context) {
-    return Text(title,
+    return Text(title[0].toUpperCase() + title.substring(1),
       style: TextStyle(
           color: Color(0xFF424242),
           fontSize: 21,
@@ -1185,7 +1176,7 @@ class CategoryListState extends State<CategoryList> {
     });
 
     return  Container(
-      height: 50,
+      height: 55,
       child: ListView(
           scrollDirection: Axis.horizontal,
           children: categoryItems
@@ -1253,7 +1244,7 @@ class CategoryListItemState extends State<CategoryListItem> with AutomaticKeepAl
     return GestureDetector(
       child: Padding(
           padding:
-          EdgeInsets.only(left: 11, top: 5, bottom: 5),
+          EdgeInsets.only(left: 11, top: 8, bottom: 8),
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -1264,7 +1255,7 @@ class CategoryListItemState extends State<CategoryListItem> with AutomaticKeepAl
                 padding: EdgeInsets.only(left: 15, right: 15),
                 child: Center(
                   child: Text(
-                    value,
+                    value[0].toUpperCase() + value.substring(1),
                     style: TextStyle(
                         color: (value != categoryList.currentCategory)
                             ? Color(0xFF424242)
@@ -1493,6 +1484,10 @@ class MenuItemState extends State<MenuItem> with AutomaticKeepAliveClientMixin{
     GlobalKey<PriceFieldState> priceFieldKey =
     new GlobalKey<PriceFieldState>();
 
+    AmplitudeAnalytics.analytics.logEvent('open_product', eventProperties: {
+      'uuid': restaurantDataItems.uuid
+    });
+
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
@@ -1597,19 +1592,6 @@ class MenuItemState extends State<MenuItem> with AutomaticKeepAliveClientMixin{
                   ]),
                 ),
               )),
-//          Expanded(
-//            child: ListView(
-//              scrollDirection: Axis.vertical,
-//              children: List.generate(food_records_items.length, (index){
-//                return Row(
-//                  children: <Widget>[
-//                    (food_records_items[index].variants != null) ? Text(food_records_items[index].variants[index].name) : Container(),
-//                  ],
-//                );
-//              },
-//              ),
-//            ),
-//          ),
           Container(
             margin: EdgeInsets.only(right: 0.0, top: 10, bottom: 12),
             child: Column(
@@ -1742,6 +1724,9 @@ class MenuItemState extends State<MenuItem> with AutomaticKeepAliveClientMixin{
                                   cartItemsQuantityKey.currentState.refresh();
                                   parent.counterKey.currentState.refresh();
                                 }
+                                AmplitudeAnalytics.analytics.logEvent('add_to_cart', eventProperties: {
+                                  'uuid': restaurantDataItems.uuid
+                                });
                               } else {
                                 noConnection(context);
                               }

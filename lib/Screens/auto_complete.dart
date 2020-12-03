@@ -102,7 +102,6 @@ class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveC
                 controller: controller,
                 cursorColor: Color(0xFFFD6F6D),
                 textCapitalization: TextCapitalization.sentences,
-                //autofocus: true,
                 focusNode: node,
                 style: TextStyle(
                   color: Color(0xFF000000),
@@ -138,7 +137,6 @@ class AutoCompleteDemoState extends State<AutoComplete> with AutomaticKeepAliveC
                 controller.text =(suggestion as InitialAddressModel).unrestrictedValue;
                 // и фиксируем его, как последнее выбранное
                 selectedValue = (suggestion as InitialAddressModel);
-                //FocusScope.of(context).unfocus();
 
                 // Избегаем потери фокуса и ставим курсор в конец
                 node.requestFocus();

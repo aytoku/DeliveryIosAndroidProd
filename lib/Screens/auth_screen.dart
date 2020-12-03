@@ -5,6 +5,7 @@ import 'package:flutter_app/Internet/check_internet.dart';
 import 'package:flutter_app/Screens/code_screen.dart';
 import 'package:flutter_app/Screens/home_screen.dart';
 import 'package:flutter_app/data/data.dart';
+import 'package:flutter_app/models/amplitude.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -157,7 +158,7 @@ class _AuthScreenState extends State<AuthScreen> {
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: 90, top: 10),
+                  padding: EdgeInsets.only(bottom: 80, top: 10),
                   child: Text.rich(
                     TextSpan(
                         text:
@@ -209,23 +210,12 @@ class _AuthScreenState extends State<AuthScreen> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                  padding: EdgeInsets.only(bottom: 20, top: 10),
+                  padding: EdgeInsets.only(bottom: 20),
                   child: Button(key: buttonStateKey, color: Color(0xF3F3F3F3),)
               ),
             ),
           ],
         ));
-  }
-
-  String validateMobile(String value) {
-    String pattern = r'(^(?:[+]?7)[0-9]{10}$)';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0) {
-      return 'Укажите норер';
-    } else if (!regExp.hasMatch(value)) {
-      return 'Указан неверный номер';
-    }
-    return null;
   }
 }
 
@@ -246,12 +236,21 @@ class ButtonState extends State<Button> {
 
   ButtonState(this.color);
 
+  String validateMobile(String value) {
+    String pattern = r'(^(?:[+]?7)[0-9]{10}$)';
+    RegExp regExp = new RegExp(pattern);
+    if (value.length == 0) {
+      return 'Укажите норер';
+    } else if (!regExp.hasMatch(value)) {
+      return 'Указан неверный номер';
+    }
+    return null;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-//    if(){
-//
-//    }
     return FlatButton(
       child: Text('Далее',
           style: TextStyle(
@@ -297,6 +296,7 @@ class ButtonState extends State<Button> {
               else {
                 necessaryDataForAuth.refresh_token = refresh_token_oppai;
                 currentUser.isLoggedIn = true;
+                await AmplitudeAnalytics.analytics.setUserId(necessaryDataForAuth.phone_number);
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(
                         builder: (context) => HomeScreen()),
@@ -313,16 +313,5 @@ class ButtonState extends State<Button> {
         }
       },
     );
-  }
-
-  String validateMobile(String value) {
-    String pattern = r'(^(?:[+]?7)[0-9]{10}$)';
-    RegExp regExp = new RegExp(pattern);
-    if (value.length == 0) {
-      return 'Укажите норер';
-    } else if (!regExp.hasMatch(value)) {
-      return 'Указан неверный номер';
-    }
-    return null;
   }
 }

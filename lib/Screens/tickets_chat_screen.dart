@@ -57,15 +57,12 @@ class TicketsChatScreenState extends State<TicketsChatScreen>
         appBar: AppBar(
             backgroundColor: Colors.white,
             title: Align(
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 0),
-                  child: Text(
-                    'Обращение ' + time,
-                    style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF424242)),
-                  ),
-                )
+              alignment: Alignment.topCenter,
+              child: Text(
+                'Обращение ' + time,
+                style: TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF424242)),
+              ),
             ),
             leading: InkWell(
               child: Container(

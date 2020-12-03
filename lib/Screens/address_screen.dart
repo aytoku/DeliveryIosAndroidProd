@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/Internet/check_internet.dart';
 import 'package:flutter_app/data/data.dart';
@@ -53,7 +52,7 @@ class PageState extends State<PageScreen> {
   }
 
 
-  showPaymentAlertDialog(BuildContext context) {
+  showPaymentErrorAlertDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -234,7 +233,7 @@ class PageState extends State<PageScreen> {
               height: 50,
               width: 100,
               child: Center(
-                child: Text("Заполните все поля"),
+                child: Text("Введите адрес"),
               ),
             ),
           ),
@@ -281,7 +280,6 @@ class PageState extends State<PageScreen> {
                 _timer = new Timer.periodic(
                   oneSec, (Timer timer) async {
                   try{
-
                     // Получем текущий урл
                     String url = await webController.currentUrl();
                     print(url);
@@ -303,7 +301,7 @@ class PageState extends State<PageScreen> {
                     }else if(url == 'https://eda.faem.ru/payment-widget.html?status=fail'){
                       Navigator.pop(context);
                       // Выводим ошибку
-                      showPaymentAlertDialog(context);
+                      showPaymentErrorAlertDialog(context);
                       // Задержка окна
                       await Future.delayed(Duration(seconds: 2), () {
                         Navigator.of(context).pop(true);
@@ -356,7 +354,7 @@ class PageState extends State<PageScreen> {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(top: 30, bottom: 10),
+                    padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.05, bottom: 10),
                     child: Stack(
                       children: <Widget>[
                         Align(
@@ -395,13 +393,6 @@ class PageState extends State<PageScreen> {
                       ],
                     ),
                   ),
-//                  Padding(
-//                    padding: EdgeInsets.only(top: 10, bottom: 10),
-//                    child: Divider(
-//                      height: 1,
-//                      color: Color(0xFFF5F5F5),
-//                    ),
-//                  ),
                   Row(
                     children: <Widget>[
                       Container(
@@ -486,7 +477,6 @@ class PageState extends State<PageScreen> {
             ),
             Expanded(
               child: PageView(
-                //scrollDirection: Axis.horizontal,
                 controller: _controller,
                 children: [addressScreen, takeAwayScreen],
                 onPageChanged: (int pageId) {
@@ -723,7 +713,6 @@ class AddressScreenState extends State<AddressScreen>
   @override
   void initState() {
     super.initState();
-    print('fagoti 2');
     // Инициализируем автокомплит
     destinationPointsKey = new GlobalKey();
     autoComplete = new AutoComplete(destinationPointsKey, 'Введите адрес',
@@ -740,8 +729,6 @@ class AddressScreenState extends State<AddressScreen>
   }
 
   bool status1 = false;
-
-  GlobalKey<FormState> _foodItemFormKey = GlobalKey();
   GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey();
   final maxLines = 1;
   TextEditingController commentField = new TextEditingController();
@@ -1175,135 +1162,6 @@ class AddressScreenState extends State<AddressScreen>
           )
       ),);
   }
-
-  void _onPress() {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            color: Color(0xFF737373),
-            height: 100,
-            child: Container(
-              child: _buildBottomNavigationMenu(),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(30),
-                    topRight: const Radius.circular(30),
-                  )),
-            ),
-          );
-        });
-  }
-
-  Column _buildBottomNavigationMenu() {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          leading: SvgPicture.asset('assets/svg_images/dollar_bills.svg'),
-          title: Text(
-            "Наличными",
-            style: TextStyle(color: Colors.black),
-          ),
-          trailing: SvgPicture.asset('assets/svg_images/circle.svg'),
-          //onTap: () => _selectItem("Наличными"),
-        ),
-      ],
-    );
-  }
-
-
-
-  Widget _buildTextFormField(String hint, {int maxLine = 1}) {
-    return TextFormField(
-      decoration: InputDecoration(hintText: "$hint"),
-      maxLines: maxLine,
-      keyboardType: hint == "Price" || hint == "Discount"
-          ? TextInputType.number
-          : TextInputType.text,
-      validator: (String value) {
-        if (value.isEmpty && hint == "") {
-          return "Заполните поле";
-        }
-      },
-      onChanged: (String value) {
-        if (hint == "") {
-          address = value;
-        }
-        if (hint == "") {
-          office = value;
-        }
-        if (hint == "") {
-          floor = value;
-        }
-        if (hint == "") {
-          comment = value;
-        }
-        if (hint == "") {
-          delivery = value;
-        }
-      },
-    );
-  }
-
-  showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: 0),
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))),
-            child: Container(
-                height: 100,
-                width: 320,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: 15, top: 20, bottom: 20),
-                      child: Text(
-                        'Идет оплата',
-                        style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF424242)),
-                      ),
-                    ),
-                    Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  ],
-                )),
-          ),
-        );
-      },
-    );
-  }
-
-  emptyFields(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 1), () {
-          Navigator.of(context).pop(true);
-        });
-        return Center(
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            child: Container(
-              height: 50,
-              width: 100,
-              child: Center(
-                child: Text("Заполните все поля"),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
 class TakeAway extends StatefulWidget {
@@ -1495,97 +1353,6 @@ class TakeAwayState extends State<TakeAway>
             ],
           )
       ),);
-  }
-
-  void _onPress() {
-    showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            color: Color(0xFF737373),
-            height: 100,
-            child: Container(
-              child: _buildBottomNavigationMenu(),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(30),
-                    topRight: const Radius.circular(30),
-                  )),
-            ),
-          );
-        });
-  }
-
-  Column _buildBottomNavigationMenu() {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          leading: SvgPicture.asset('assets/svg_images/dollar_bills.svg'),
-          title: Text(
-            "Наличными",
-            style: TextStyle(color: Colors.black),
-          ),
-          trailing: SvgPicture.asset('assets/svg_images/circle.svg'),
-          onTap: () => _selectItem("Наличными"),
-        ),
-      ],
-    );
-  }
-
-  void _selectItem(String name) {
-    Navigator.pop(context);
-    setState(() {
-      title = name;
-      //image = image_name;
-    });
-  }
-
-  Widget _buildTextFormField(String hint, {int maxLine = 1}) {
-    return TextFormField(
-      decoration: InputDecoration(hintText: "$hint"),
-      maxLines: maxLine,
-      keyboardType: hint == "Price" || hint == "Discount"
-          ? TextInputType.number
-          : TextInputType.text,
-      validator: (String value) {
-        if (value.isEmpty && hint == "Адрес доставки") {
-          return "Заполните поле";
-        }
-        if (value.isEmpty && hint == "Кв./офис  Домофон") {
-          return "Заполните поле";
-        }
-
-        if (value.isEmpty && hint == "Подъезд  Этаж") {
-          return "Заполните поле";
-        }
-
-        if (value.isEmpty && hint == "Доставка") {
-          return "Заполните поле";
-        }
-
-        if (value.isEmpty && hint == "Комментарий к заказу") {
-          return "Заполните поле";
-        }
-      },
-      onChanged: (String value) {
-        if (hint == "Адрес доставки") {
-          address = value;
-        }
-        if (hint == "Кв./офис  Домофон") {
-          office = value;
-        }
-        if (hint == "Подъезд  Этаж") {
-          floor = value;
-        }
-        if (hint == "Комментарий к заказу") {
-          comment = value;
-        }
-        if (hint == "Доставка") {
-          delivery = value;
-        }
-      },
-    );
   }
 }
 

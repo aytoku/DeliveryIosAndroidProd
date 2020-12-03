@@ -1,11 +1,14 @@
 import 'dart:io';
 
+import 'package:amplitude_flutter/amplitude.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/GetData/centrifugo.dart';
 import 'package:flutter_app/GetData/getImage.dart';
 import 'package:flutter_app/GetData/getOrder.dart';
 import 'package:flutter_app/GetData/getTicketByFilter.dart';
 import 'package:flutter_app/Internet/check_internet.dart';
+import 'package:flutter_app/PostData/RestarurantCategories.dart';
 import 'package:flutter_app/PostData/chat.dart';
 import 'package:flutter_app/GetData/orders_story_data.dart';
 import 'package:flutter_app/PostData/restaurant_data_pass.dart';
@@ -17,7 +20,8 @@ import 'package:flutter_app/data/data.dart';
 import 'package:flutter_app/models/ChatHistoryModel.dart';
 import 'package:flutter_app/models/OrderStoryModel.dart';
 import 'package:flutter_app/models/QuickMessagesModel.dart';
-import 'package:flutter_app/models/TicketModel.dart';
+import 'package:flutter_app/models/RestaurantCategoriesModel.dart';
+import 'package:flutter_app/models/centrifugo.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_app/models/ResponseData.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,8 +29,6 @@ import 'auth_screen.dart';
 import 'infromation_screen.dart';
 import 'my_addresses_screen.dart';
 import 'orders_story_screen.dart';
-import 'payments_methods_screen.dart';
-import 'payments_methods_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen() : super(key: homeScreenKey);
@@ -41,11 +43,13 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
   int limit = 12;
   bool isLoading = true;
   List<Records> records_items = new List<Records>();
-  String category;
+  String category_uuid = '';
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   GlobalKey<BasketButtonState> basketButtonStateKey = new GlobalKey<BasketButtonState>();
-  bool _color;
   int records_count = -1;
+  Amplitude analytics;
+  final String apiKey = 'e0a9f43456e45fc41f68e3d8a149d18d';
+  RestaurantCategories restaurantCategories;
 
   @override
   void initState() {
@@ -55,7 +59,6 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    _color = true;
   }
 
   @override
@@ -78,7 +81,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
     super.dispose();
   }
 
-  _buildNearlyRestaurant() {
+  _buildRestaurantsList() {
     DateTime now = DateTime.now();
     int currentTime = now.hour*60+now.minute;
     print((currentTime/60).toString() + 'KANTENT');
@@ -262,9 +265,6 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) {
-//                    if(currentUser.cartDataModel.cart.length > 0 && currentUser.cartDataModel.cart[0].restaurant.uuid != restaurant.uuid){
-//                      currentUser.cartDataModel.cart.clear();
-//                    }
                   return RestaurantScreen(restaurant: restaurant);
                 }),
               );
@@ -310,7 +310,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
       ),
     ];
 
-    if (isLogged) { 
+    if (isLogged) {
       allSideBarItems.insertAll(0, [
         Padding(
           padding: EdgeInsets.only(top: 60),
@@ -346,23 +346,6 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
             },
           ),
         ),
-        // ListTile(
-        //   title: Text('Способы оплаты',
-        //   style: TextStyle(
-        //       fontSize: 17, color: Color(0xFF424242), letterSpacing: 0.45)),
-        //   onTap: () async {
-        //     if (await Internet.checkConnection()) {
-        //       Navigator.push(
-        //         context,
-        //         new MaterialPageRoute(
-        //           builder: (context) => new PaymentsMethodsScreen(),
-        //         ),
-        //       );
-        //     } else {
-        //       noConnection(context);
-        //     }
-        //   },
-        // ),
         ListTile(
           title: Padding(
             padding: EdgeInsets.only(top: 20, bottom: 20),
@@ -417,21 +400,6 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                     style: TextStyle(
                         fontSize: 17, color: Color(0xFF424242), letterSpacing: 0.45),
                   ),
-//                FutureBuilder(
-//                  future: TicketsList.hasNewMessage(),
-//                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-//                    if(snapshot.connectionState == ConnectionState.done && snapshot.data != null && snapshot.data){
-//                      return Align(
-//                        alignment: Alignment.topRight,
-//                        child: Padding(
-//                          padding: EdgeInsets.only(right: 90, bottom: 2),
-//                          child: SvgPicture.asset('assets/svg_images/chat_circle.svg'),
-//                        ),
-//                      );
-//                    }
-//                    return Container(height: 0);
-//                  },
-//                ),
                 ],
               )
           ),
@@ -448,17 +416,6 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
             }
           },
         ),
-//              ListTile(
-//                title: Text('Настройки'),
-//                onTap: (){
-//                  Navigator.push(
-//                    context,
-//                    new MaterialPageRoute(
-//                      builder: (context) => new SettingsScreen(),
-//                    ),
-//                  );
-//                },
-//              ),
       ]);
     } else {
       allSideBarItems.insert(
@@ -495,6 +452,119 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
     return allSideBarItems;
   }
 
+  List<Widget> _buildRestaurantCategoriesList(List<Record> categories){
+    List<Widget> result = new List<Widget>();
+    result.add(GestureDetector(
+      child: Padding(
+          padding:
+          EdgeInsets.only(left: 10, right: 5, top: 8, bottom: 8),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                color: ('' != category_uuid)
+                    ? Color(0xFFF6F6F6)
+                    : Color(0xFFFE534F)),
+            child: Padding(
+                padding: EdgeInsets.only(left: 15, right: 15),
+                child: Center(
+                  child: Text(
+                    "Все",
+                    style: TextStyle(
+                        color: ('' !=
+                            category_uuid)
+                            ? Color(0xFF424242)
+                            : Colors.white,
+                        fontSize: 15),
+                  ),
+                )),
+          )),
+      onTap: () async {
+        if (await Internet.checkConnection()) {
+          setState(() {
+            isLoading = true;
+            page = 1;
+            category_uuid = '';
+          });
+        } else {
+          noConnection(context);
+        }
+      },
+    ));
+    categories.forEach((element) {
+      result.add(GestureDetector(
+        child: Padding(
+            padding:
+            EdgeInsets.only(left: 5, right: 5, top: 8, bottom: 8),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                  color: (element.uuid != category_uuid)
+                      ? Color(0xFFF6F6F6)
+                      : Color(0xFFFE534F)),
+              child: Padding(
+                  padding: EdgeInsets.only(left: 15, right: 15),
+                  child: Center(
+                    child: Text(
+                      element.name[0].toUpperCase() + element.name.substring(1),
+                      style: TextStyle(
+                          color: (element.uuid !=
+                              category_uuid)
+                              ? Color(0xFF424242)
+                              : Colors.white,
+                          fontSize: 15),
+                    ),
+                  )),
+            )),
+        onTap: () async {
+          if (await Internet.checkConnection()) {
+            setState(() {
+              isLoading = true;
+              page = 1;
+              category_uuid = (element.uuid == category_uuid) ? '' : element.uuid;
+            });
+          } else {
+            noConnection(context);
+          }
+        },
+      ));
+    });
+    return result;
+  }
+
+  _buildRestaurantCategories(){
+    if(restaurantCategories != null){
+      return Container(
+        height: 55,
+        child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: _buildRestaurantCategoriesList(restaurantCategories.records)
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 0.0),
+      child: Container(
+        height: 55,
+        child: FutureBuilder<RestaurantCategories>(
+          future: loadRestaurantCategories(1, 12),
+          initialData: null,
+          builder: (BuildContext context, AsyncSnapshot<RestaurantCategories> snapshot){
+            if(snapshot.hasData){
+              if(snapshot.connectionState == ConnectionState.done){
+                restaurantCategories = snapshot.data;
+                return ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: _buildRestaurantCategoriesList(restaurantCategories.records)
+                );
+              }
+            }
+            return Container(height: 0);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -509,7 +579,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
           ),
         ),
         body: FutureBuilder<DeliveryResponseData>(
-            future: loadRestaurant(page, limit),
+            future: loadRestaurant(page, limit, category_uuid),
             initialData: null,
             builder: (BuildContext context,
                 AsyncSnapshot<DeliveryResponseData> snapshot) {
@@ -519,13 +589,15 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                   records_count = snapshot.data.records_count;
                   this.records_items.clear();
                 }
-                if (snapshot.data.records_count == 0) {
-                  return Center(
-                    child: Text('Нет товаров данной категории'),
-                  );
-                }
+//                if (snapshot.data.records_count == 0) {
+//                  return Center(
+//                    child: Text('Нет товаров данной категории'),
+//                  );
+//                }
                 if (snapshot.connectionState == ConnectionState.done) {
-                  records_items.addAll(snapshot.data.records);
+                  if(snapshot.data.records != null){
+                    records_items.addAll(snapshot.data.records);
+                  }
                   isLoading = false;
                 }
                 return NotificationListener<ScrollNotification>(
@@ -545,74 +617,49 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                   },
                   child: Column(
                     children: <Widget>[
-//                      GestureDetector(
-//                        child: Container(
-//                          color: Colors.red,
-//                          height: 60,
-//                          width: 100,
-//                          child: Text('asdasd'),
-//                        ),
-//                        onTap: ()async {
-//                          await getOrder('b24d27f6-2c70-468c-a234-2509a96deccd');
-//                          //launch("tel://+79187072154");
-//                        },
-//                      ),
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 5, top: 30),
+                          child: InkWell(
+                            child: Container(
+                                height: 40,
+                                width: 60,
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 20, bottom: 4, left: 5),
+                                    child: SvgPicture.asset(
+                                        'assets/svg_images/menu.svg')
+                                )),
+                            onTap: () {
+                              _scaffoldKey.currentState.openDrawer();
+                            },
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        height: 0,
+                        color: Color(0xFFEEEEEE),
+                      ),
+                      Container(
+                        child: _buildRestaurantCategories(),
+                      ),
+                      Divider(
+                        height: 0,
+                        color: Color(0xFFEEEEEE),
+                      ),
                       Expanded(
                         child: ListView(
                           padding: EdgeInsets.zero,
                           children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(top: 30, bottom: 0, left: 0),
-                              child: Row(
-                                children: <Widget>[
-                                  Flexible(
-                                    flex: 0,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 0),
-                                      child: InkWell(
-                                        child: Container(
-                                            height: 40,
-                                            width: 60,
-                                            child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    top: 20, bottom: 4, left: 10),
-                                                child: SvgPicture.asset(
-                                                    'assets/svg_images/menu.svg')
-                                            )),
-                                        onTap: () {
-                                          _scaffoldKey.currentState.openDrawer();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-//                          Flexible(
-//                            flex: 5,
-//                            child: Padding(
-//                              padding: EdgeInsets.only(left: 50,),
-//                              child: GestureDetector(
-//                                  child: Text(
-//                                    'Указать адрес доставки',
-//                                    style: TextStyle(
-//                                        color: Colors.redAccent,
-//                                        decoration: TextDecoration.underline,
-//                                        fontSize: 14
-//                                    ),
-//                                  )
-//                              ),
+
+//                            FlatButton(
+//                                onPressed: () async {
+//                                  print(authCodeData.client_uuid);
+//                                  await Centrifugo.connectToServer();
+//                                },
+//                                child: Text('VAH')
 //                            ),
-//                          ),
-//                          Flexible(
-//                            flex: 2,
-//                            child: Padding(
-//                              padding: EdgeInsets.only(left: 50),
-//                              child: GestureDetector(
-//                                child: SvgPicture.asset('assets/svg_images/search.svg')
-//                              ),
-//                            ),
-//                          ),
-                                ],
-                              ),
-                            ),
                             FutureBuilder<List<OrderChecking>>(
                               future: OrderChecking.getActiveOrder(),
                               builder: (BuildContext context,
@@ -642,6 +689,7 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                                 }
                               },
                             ),
+
                             SizedBox(
                               height: 10,
                             ),
@@ -661,7 +709,12 @@ class HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver{
                                 ),
                               ],
                             ),
-                            _buildNearlyRestaurant()
+                            (records_items.isEmpty && !isLoading) ?  Center(
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 150),
+                                child: Text('Нет товаров данной категории'),
+                              ),
+                            ) : _buildRestaurantsList()
                           ],
                         ),
                       ),
@@ -845,13 +898,14 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
     ];
     var in_the_way = ['on_the_way'];
     var take = ['order_payment'];
-    //return Text('Ваш заказ из ' + (ordersStoryModelItem.store != null ? ordersStoryModelItem.store.name : 'Пусто'),);
+
     if (!OrderChecking.state_array.contains(ordersStoryModelItem.state)) {
       return Container();
     }
     print('ALO RABOTAI SUKA' + '' + ordersStoryModelItem.own_delivery.toString());
     print(ordersStoryModelItem.state);
     return Container(
+        width: 320,
         margin: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         decoration: BoxDecoration(
             boxShadow: [
@@ -868,6 +922,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
           children: <Widget>[
             Expanded(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Align(
                     alignment: Alignment.centerLeft,
@@ -935,6 +990,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
               child: Padding(
                 padding: EdgeInsets.only(left: 5, right: 10, bottom: 10),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(right: 5),
@@ -974,7 +1030,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 5),
+                      padding: (ordersStoryModelItem.without_delivery) ? EdgeInsets.only(left: 20) : EdgeInsets.only(right: 5),
                       child: Container(
                         height: 70,
                         width: 70,
@@ -1140,7 +1196,7 @@ class OrderCheckingState extends State<OrderChecking> with AutomaticKeepAliveCli
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       child: Padding(
-                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 10),
+                        padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
                         child: (in_the_way.contains(ordersStoryModelItem.state)) ? Container(
                           width: 130,
                           decoration: BoxDecoration(
@@ -1424,37 +1480,6 @@ class ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                                                 ),
                                               ),
                                             ),
-//                            decoration: InputDecoration(
-//                              suffix: GestureDetector(
-//                                child: SvgPicture.asset(
-//                                    'assets/svg_images/send_message.svg'),
-//                                onTap: () async {
-//                                  if (await Internet.checkConnection()) {
-//                                    var message = await Chat.sendMessage(
-//                                        order_uuid, messageField.text, 'driver');
-//                                    chatMessagesStates.forEach((key, value) {
-//                                      print(
-//                                          key + ' ' + value.currentState.toString());
-//                                    });
-//                                    messageField.clear();
-//                                    setState(() {
-//                                      GlobalKey<ChatMessageScreenState>
-//                                      chatMessageScreenStateKey =
-//                                      new GlobalKey<ChatMessageScreenState>();
-//                                      chatMessagesStates[message.uuid] =
-//                                          chatMessageScreenStateKey;
-//                                      chatMessageList.insert(
-//                                          0,
-//                                          new ChatMessageScreen(
-//                                              key: chatMessageScreenStateKey,
-//                                              chatMessage: message));
-//                                    });
-//                                  } else {
-//                                    noConnection(context);
-//                                  }
-//                                },
-//                              ),
-//                            ),
                                           ),
                                         )
                                     )
@@ -1499,46 +1524,6 @@ class ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                               ],
                             ),
                           ),
-//                  Padding(
-//                    padding: EdgeInsets.only(top: 60, bottom: 20, right: 15, left: 15),
-//                    child: Container(
-//                      height: 40,
-//                      child: TextField(
-//                        controller: messageField,
-//                        decoration: InputDecoration(
-//                          suffix: GestureDetector(
-//                            child: SvgPicture.asset(
-//                                'assets/svg_images/send_message.svg'),
-//                            onTap: () async {
-//                              if (await Internet.checkConnection()) {
-//                                var message = await Chat.sendMessage(
-//                                    order_uuid, messageField.text, 'driver');
-//                                chatMessagesStates.forEach((key, value) {
-//                                  print(
-//                                      key + ' ' + value.currentState.toString());
-//                                });
-//                                messageField.clear();
-//                                setState(() {
-//                                  GlobalKey<ChatMessageScreenState>
-//                                  chatMessageScreenStateKey =
-//                                  new GlobalKey<ChatMessageScreenState>();
-//                                  chatMessagesStates[message.uuid] =
-//                                      chatMessageScreenStateKey;
-//                                  chatMessageList.insert(
-//                                      0,
-//                                      new ChatMessageScreen(
-//                                          key: chatMessageScreenStateKey,
-//                                          chatMessage: message));
-//                                });
-//                              } else {
-//                                noConnection(context);
-//                              }
-//                            },
-//                          ),
-//                        ),
-//                      ),
-//                    ),
-//                  )
                         ],
                       )
                     ],
@@ -1572,18 +1557,6 @@ class ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
             chatMessageList.add(new ChatMessageScreen(
                 chatMessage: element, key: chatMessageScreenStateKey));
           });
-//          GlobalKey<ChatMessageScreenState> chatMessageScreenStateKey =
-//              new GlobalKey<ChatMessageScreenState>();
-          //chatMessagesStates['123'] = chatMessageScreenStateKey;
-//          chatMessageList.add(new ChatMessageScreen(
-//              key: chatMessageScreenStateKey,
-//              chatMessage: new ChatMessage(
-//                  message: 'halo',
-//                  ack: false,
-//                  uuid: '123',
-//                  from: 'driver',
-//                  to: 'client')
-//          ));
           return buildChat();
         } else {
           return Center(

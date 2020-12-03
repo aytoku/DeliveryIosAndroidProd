@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:device_id/device_id.dart';
 import 'package:flutter_app/data/data.dart';
 import 'package:flutter_app/models/AuthCode.dart';
+import 'package:flutter_app/models/centrifugo.dart';
 import 'package:flutter_app/models/firebase_notification_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -22,7 +23,7 @@ class NecessaryDataForAuth{
   });
 
   static Future<NecessaryDataForAuth> getData() async{
-
+    //    await Future.delayed(Duration(seconds: 4), () {});
     print('Dima OPPAI 3');
     if(_necessaryDataForAuth != null)
       return _necessaryDataForAuth;
@@ -36,7 +37,8 @@ class NecessaryDataForAuth{
     result.refresh_token = refresh_token;
     _necessaryDataForAuth = result;
     if(refresh_token != null){
-      await new FirebaseNotifications().setUpFirebase();
+//      await new FirebaseNotifications().setUpFirebase();
+      await Centrifugo.connectToServer();
       await saveData();
     }
 

@@ -4,13 +4,21 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 
-Future<DeliveryResponseData> loadRestaurant(int page, int limit) async {
+Future<DeliveryResponseData> loadRestaurant(int page, int limit, String category) async {
   DeliveryResponseData deliveryResponseData = null;
   var json_request = jsonEncode({
     "type": "restaurant",
     "page": page,
-    "limit": limit
+    "limit": limit,
+    "category": category
   });
+  if(category == ''){
+    json_request = jsonEncode({
+      "type": "restaurant",
+      "page": page,
+      "limit": limit
+    });
+  }
   var url = 'https://crm.apis.prod.faem.pro/api/v2/stores';
   var response = await http.post(url, body: json_request, headers: <String, String>{
     'Content-Type': 'application/json; charset=UTF-8',

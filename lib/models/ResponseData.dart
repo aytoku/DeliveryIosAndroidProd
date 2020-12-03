@@ -13,7 +13,10 @@ class DeliveryResponseData {
 
     var records_list = parsedJson['records'] as List;
     print(records_list.runtimeType);
-    List<Records> recordList = records_list.map((i) => Records.fromJson(i)).toList();
+    List<Records> recordList = null;
+    if(records_list != null){
+      recordList = records_list.map((i) => Records.fromJson(i)).toList();
+    }
 
     return DeliveryResponseData(
         records:recordList,

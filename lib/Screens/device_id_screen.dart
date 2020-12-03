@@ -3,13 +3,13 @@ import 'package:flutter_app/Config/config.dart';
 import 'package:flutter_app/Screens/home_screen.dart';
 import 'package:flutter_app/data/data.dart';
 import 'package:flutter_app/models/CartDataModel.dart';
+import 'package:flutter_app/models/amplitude.dart';
 
 class DeviceIdScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<NecessaryDataForAuth>(
       future: NecessaryDataForAuth.getData(),
-      // ignore: missing_return
       builder:
           (BuildContext context, AsyncSnapshot<NecessaryDataForAuth> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -22,32 +22,24 @@ class DeviceIdScreen extends StatelessWidget {
               necessaryDataForAuth.phone_number == null ||
               necessaryDataForAuth.name == null) {
             currentUser.isLoggedIn = false;
+            AmplitudeAnalytics.initialize(necessaryDataForAuth.device_id).then((value){
+              AmplitudeAnalytics.analytics.logEvent('open_app');
+            });
             return HomeScreen();
           }
           print(necessaryDataForAuth.refresh_token);
+          AmplitudeAnalytics.initialize(necessaryDataForAuth.phone_number).then((value){
+            AmplitudeAnalytics.analytics.logEvent('open_app');
+          });
           return HomeScreen();
         } else {
           return Center(
-            child: CircularProgressIndicator(),
+              child: CircularProgressIndicator()
+//            Image.asset('assets/images/popugai.gif', height: 200.0,
+//              width: 200.0,
+//            ),
           );
         }
-      },
-    );
-  }
-}
-
-class ara extends StatelessWidget {
-  Widget build(BuildContext context) {
-    print('ZAEBALI');
-    return GestureDetector(
-      child: Text('sdfsdf'),
-      onTap: () {
-        Navigator.push(
-          context,
-          new MaterialPageRoute(
-            builder: (context) => new DeviceIdScreen(),
-          ),
-        );
       },
     );
   }

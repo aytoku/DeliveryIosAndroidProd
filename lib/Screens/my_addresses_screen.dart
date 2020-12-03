@@ -17,7 +17,7 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
   GlobalKey<AutoCompleteDemoState> autoCompleteKey = new GlobalKey();
   bool addressScreenButton = false;
 
-  void _deleteButton(MyFavouriteAddressesModel myAddressesModel) {
+  void _autocomplete(MyFavouriteAddressesModel myAddressesModel) {
     showModalBottomSheet(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
@@ -31,7 +31,7 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
           return Container(
               height: MediaQuery.of(context).size.height * 0.8,
               child: Container(
-                child: _buildDeleteBottomNavigationMenu(myAddressesModel),
+                child: _buildAutocompleteBottomNavigationMenu(myAddressesModel),
                 decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
                     borderRadius: BorderRadius.only(
@@ -42,7 +42,7 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
         });
   }
 
-  _buildDeleteBottomNavigationMenu(MyFavouriteAddressesModel myAddressesModel) {
+  _buildAutocompleteBottomNavigationMenu(MyFavouriteAddressesModel myAddressesModel) {
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Stack(
@@ -102,33 +102,12 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
                               },
                             ),
                           ),
-//              Align(
-//                alignment: Alignment.topRight,
-//                child: Padding(
-//                  padding: EdgeInsets.only(right: 80, top: 20, bottom: 20,),
-//                  child: Container(
-//                    width: 1,
-//                    height: 30,
-//                    color: Color(0xFFEBEAEF),
-//                  ),
-//                ),
-//              ),
-//              Align(
-//                alignment: Alignment.topRight,
-//                child: Padding(
-//                  padding: EdgeInsets.only(right: 15, top: 30, bottom: 20,),
-//                  child: Text('Карта'),
-//                ),
-//              )
                         ],
                       )),
-                  Padding(
-                    padding: EdgeInsets.only(top: 0),
-                    child: Divider(
-                      color: Color(0xFFEDEDED),
-                      height: 1,
-                      thickness: 1,
-                    ),
+                  Divider(
+                    color: Color(0xFFEDEDED),
+                    height: 1,
+                    thickness: 1,
                   ),
                 ],
               ),
@@ -165,17 +144,17 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
                         InkWell(
                           child: Align(
                               alignment: Alignment.topLeft,
-                              child: Padding(
-                                  padding: EdgeInsets.only(top: 0, bottom: 0),
-                                  child: Container(
-                                      height: 40,
-                                      width: 60,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 12, bottom: 12, right: 10),
-                                        child: SvgPicture.asset(
-                                            'assets/svg_images/arrow_left.svg'),
-                                      )))),
+                              child: Container(
+                                  height: 40,
+                                  width: 60,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 12, bottom: 12, right: 10),
+                                    child: SvgPicture.asset(
+                                        'assets/svg_images/arrow_left.svg'),
+                                  )
+                              )
+                          ),
                           onTap: () {
                             homeScreenKey = new GlobalKey<HomeScreenState>();
                             Navigator.of(context).pushAndRemoveUntil(
@@ -186,19 +165,18 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
                         ),
                         InkWell(
                           child: Align(
-                              alignment: Alignment.topRight,
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 0, top: 0),
-                                child: Container(
-                                    height: 40,
-                                    width: 60,
-                                    child: Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 12, bottom: 12, right: 15),
-                                        child: SvgPicture.asset(
-                                            'assets/svg_images/plus.svg')
-                                    )),
-                              )),
+                            alignment: Alignment.topRight,
+                            child: Container(
+                                height: 40,
+                                width: 60,
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 12, bottom: 12, right: 15),
+                                    child: SvgPicture.asset(
+                                        'assets/svg_images/plus.svg')
+                                )
+                            ),
+                          ),
                           onTap: () async {
                             if (await Internet.checkConnection()) {
                               setState(() {
@@ -262,7 +240,7 @@ class MyAddressesScreenState extends State<MyAddressesScreen> {
                                                 onTap: () async {
                                                   if (await Internet
                                                       .checkConnection()) {
-                                                    _deleteButton(
+                                                    _autocomplete(
                                                         myAddressesModelList[
                                                         index]);
                                                   } else {

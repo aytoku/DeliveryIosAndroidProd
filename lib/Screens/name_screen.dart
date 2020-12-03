@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/Config/config.dart';
 import 'package:flutter_app/Internet/check_internet.dart';
 import 'package:flutter_app/data/data.dart';
+import 'package:flutter_app/models/amplitude.dart';
 import 'package:flutter_svg/svg.dart';
 import 'dart:async';
 import 'home_screen.dart';
@@ -16,6 +17,11 @@ class NameScreen extends StatefulWidget {
 class NameScreenState extends State<NameScreen> {
   GlobalKey<ButtonState> buttonStateKey = new GlobalKey<ButtonState>();
   TextEditingController nameFieldController = new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,26 +100,6 @@ class NameScreenState extends State<NameScreen> {
                                       border: InputBorder.none,
                                       counterText: '',
                                     ),
-//                                    onChanged: (String value) async {
-//                                      //necessaryDataForAuth.name = value;
-//                                      if (value.length > 0 &&
-//                                          buttonStateKey.currentState.color !=
-//                                              Color(0xFFFE534F)) {
-//                                        buttonStateKey.currentState
-//                                            .setState(() {
-//                                          buttonStateKey.currentState.color =
-//                                              Color(0xFFFE534F);
-//                                        });
-//                                      } else if (value.length == 0 &&
-//                                          buttonStateKey.currentState.color !=
-//                                              Color(0xFFF3F3F3)) {
-//                                        buttonStateKey.currentState
-//                                            .setState(() {
-//                                          buttonStateKey.currentState.color =
-//                                              Color(0xFFF3F3F3);
-//                                        });
-//                                      }
-//                                    },
                                   ),
                                 )),
                           ),
@@ -135,7 +121,7 @@ class NameScreenState extends State<NameScreen> {
                         children: <Widget>[
                           Padding(
                             padding: EdgeInsets.only(
-                                bottom: 20, left: 0, right: 0, top: 0),
+                                bottom: 20),
                             child: Button(
                               key: buttonStateKey,
                               color: Color(0xFFFE534F),
@@ -144,8 +130,6 @@ class NameScreenState extends State<NameScreen> {
                                   necessaryDataForAuth.name = nameFieldController.text;
                                   currentUser.isLoggedIn = true;
                                   await NecessaryDataForAuth.saveData();
-//                                  await new FirebaseNotifications()
-//                                      .setUpFirebase();
                                   print(necessaryDataForAuth.name);
                                   homeScreenKey =
                                   new GlobalKey<HomeScreenState>();
@@ -188,36 +172,10 @@ class ButtonState extends State<Button> {
 
   ButtonState(this.color, {this.onTap});
 
-  noConnection(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 1), () {
-          Navigator.of(context).pop(true);
-        });
-        return Center(
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            child: Container(
-              height: 50,
-              width: 100,
-              child: Center(
-                child: Text("Нет подключения к интернету"),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-//    if(){
-//
-//    }
     return FlatButton(
       child: Text('Далее',
           style: TextStyle(

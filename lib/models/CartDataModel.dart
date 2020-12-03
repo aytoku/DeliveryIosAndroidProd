@@ -19,12 +19,12 @@ class CartDataModel {
         });
       }
       Map<String, dynamic> item =
-          {
-            "uuid": order.food.uuid,
-            "variant_uuid": (order.food.variants != null) ? order.food.variants[0].uuid : null,
-            "toppings_uuid": toppingsUuid,
-            "number": order.quantity,
-          };
+      {
+        "uuid": order.food.uuid,
+        "variant_uuid": (order.food.variants != null) ? order.food.variants[0].uuid : null,
+        "toppings_uuid": toppingsUuid,
+        "number": order.quantity,
+      };
       list.add(item);
     });
     return list;
@@ -82,7 +82,7 @@ class CartDataModel {
       prefs.setString('restaurant', convert.jsonEncode(cart[0].restaurant.toJson()));
   }
 
-   static Future<CartDataModel> getCart() async{
+  static Future<CartDataModel> getCart() async{
     var temp_cart = new CartDataModel(cart: new List<Order>());
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if(!prefs.containsKey('cart'))
@@ -93,7 +93,7 @@ class CartDataModel {
     return temp_cart;
   }
 
-   static Future<CartDataModel> fromJson(List<dynamic> parsedJson) async{
+  static Future<CartDataModel> fromJson(List<dynamic> parsedJson) async{
 
     List<Order> records = new List<Order>();
     parsedJson.forEach((value) {

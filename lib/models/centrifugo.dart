@@ -1,32 +1,53 @@
-import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+import 'package:centrifuge/centrifuge.dart' as centrifuge;
 import 'package:flutter/material.dart';
+import 'package:flutter_app/GetData/centrifugo.dart';
 import 'package:flutter_app/GetData/getOrder.dart';
-import 'package:flutter_app/PostData/fcm.dart';
 import 'package:flutter_app/Screens/home_screen.dart';
 import 'package:flutter_app/data/data.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:convert' as convert;
-import 'ChatHistoryModel.dart';
 
-class FirebaseNotifications {
-  FirebaseMessaging _firebaseMessaging;
+import 'package:flutter_app/models/ChatHistoryModel.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-  Future setUpFirebase() async{
-    _firebaseMessaging = FirebaseMessaging();
-    await firebaseCloudMessaging_Listeners();
-  }
+class Centrifugo{
+  static centrifuge.Client client;
+  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  new FlutterLocalNotificationsPlugin();
 
-  // ignore: missing_return
-  static Future<dynamic> myBackgroundMessageHandler(Map<String, dynamic> message) {
-    print(message);
-    print('EXPLOOOOSION');
-    messageHandler(message);
+
+  static Future<void> connectToServer() async {
+    client = centrifuge.createClient('wss://centrifugo.prod.faem.pro/connection/websocket?format=protobuf');
+
+    var android = new AndroidInitializationSettings('@mipmap/faem');
+    var ios = new IOSInitializationSettings();
+    var platform = new InitializationSettings(android, ios);
+    flutterLocalNotificationsPlugin.initialize(platform);
+
+    String token = await getCentrifugoToken();
+    client.setToken(token);
+    client.connectStream.listen((event) {
+      print('Centrifugo connected');
+    });
+    client.disconnectStream.listen((event) {
+      print('Centrifugo disconnected');
+    });
+    client.connect();
+
+    final subscription = client.getSubscription('client/' + authCodeData.client_uuid);
+
+    subscription.publishStream.listen((event){
+      var parsedJson = convert.jsonDecode(utf8.decode(event.data));
+      showNotification(parsedJson);
+      messageHandler(parsedJson);
+      print("STATUS TUT" + utf8.decode(event.data));
+    });
+
+    subscription.subscribe();
   }
 
   static Future<void> OrderCheckingUpdater(String order_uuid, String order_state) async {
-    print('vnature' + homeScreenKey.currentState.toString());
     if(homeScreenKey.currentState != null && homeScreenKey.currentState.orderList != null
         && !DeliveryStates.contains(order_state)){
       homeScreenKey.currentState.orderList.removeWhere((element) => element.ordersStoryModelItem.uuid == order_uuid);
@@ -59,19 +80,15 @@ class FirebaseNotifications {
     //ios fix
     print(message);
     if(!message.containsKey('data') && (message.containsKey('payload') || message.containsKey('tag'))){
-      print('arturia saber');
       message['data'] = new Map<String, dynamic>();
       if(message.containsKey('payload')){
         message['data']['payload'] = message['payload'];
-        print('arturia lancer');
       }
       if(message.containsKey('tag')){
         message['data']['tag'] = message['tag'];
-        print('arturia kartyojnik');
       }
       if(message.containsKey('notification_message')){
         message['data']['notification_message'] = message['notification_message'];
-        print('arturia gopnik');
       }
     }
     print(message);
@@ -82,15 +99,14 @@ class FirebaseNotifications {
       if(data.containsKey('tag')) {
         switch (data['tag']){
           case 'order_state' :
-            var payload = convert.jsonDecode(data['payload']);
+            var payload = data['payload'];
             String order_state = payload['state'];
             String order_uuid = payload['order_uuid'];
-            print('containwsadsfsdfgsdfg');
             OrderCheckingUpdater(order_uuid, order_state);
             break;
 
           case 'chat_message' :
-            var payload = convert.jsonDecode(data['payload']);
+            var payload = data['payload'];
             var message = ChatMessage.fromJson(payload);
             if(chatKey.currentState != null){
               chatKey.currentState.setState(() {
@@ -107,7 +123,7 @@ class FirebaseNotifications {
             break;
 
           case 'chat_messages_read' :
-            var payload = convert.jsonDecode(data['payload']);
+            var payload = data['payload'];
             List<dynamic> messagesUuid = payload['messages_uuid'];
             if(chatKey.currentState != null && chatKey.currentState.order_uuid == payload['order_uuid']){
               messagesUuid.forEach((element) {
@@ -115,7 +131,6 @@ class FirebaseNotifications {
                   // ignore: invalid_use_of_protected_member
                   if(chatMessagesStates[element].currentState != null) {
                     chatMessagesStates[element].currentState.setState(() {
-                      print('uznovaemi ' + element);
                       chatMessagesStates[element].currentState.chatMessage.ack = true;
                     });
                   } else {
@@ -135,53 +150,13 @@ class FirebaseNotifications {
     }
   }
 
+  static Future<void> showNotification(Map<String, dynamic> message) async {
 
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  new FlutterLocalNotificationsPlugin();
-
-  void firebaseCloudMessaging_Listeners() async{
-    if (Platform.isIOS) iOS_Permission();
-    var token = await _firebaseMessaging.getToken();
-    FCMToken = token;
-    await sendFCMToken(token);
-    print('DAITE MNE TOKEN   ' + token);
-    var android = new AndroidInitializationSettings('@mipmap/faem');
-    var ios = new IOSInitializationSettings();
-    var platform = new InitializationSettings(android, ios);
-    flutterLocalNotificationsPlugin.initialize(platform);
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-        await showNotification(message);
-        await messageHandler(message);
-      },
-      onBackgroundMessage: myBackgroundMessageHandler,
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-        await messageHandler(message);
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-        await messageHandler(message);
-      },
-    );
-  }
-
-  void iOS_Permission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true, provisional: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-  }
-
-  Future<void> showNotification(Map<String, dynamic> message) async {
-    String title = message['notification']['title'];
-    String body = message['notification']['body'];
+    String title = message['title'];
+    String body = message['message'];
     //for ios
-//    String title_ios = message['notification_message'];
-    if(title == null)
+//    String title_ios = message['title'];
+    if(title == null || title == '')
       return;
     var androidChannelSpecifics = AndroidNotificationDetails(
       'CHANNEL_ID',

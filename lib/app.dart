@@ -9,7 +9,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Food Delivery App",
+      title: "Faem Eda",
       theme: ThemeData(
         primaryColor: Color(0xFFFD6F6D),
         cursorColor: Color(0xFFFD6F6D),

@@ -54,10 +54,10 @@ class CardModel{
     CardTypes type = parsedJson['type'] == 0 ? CardTypes.visa : CardTypes.mastercard ;
 
     return new CardModel(
-        type:type,
-        number:parsedJson['number'],
-        expiration: parsedJson['expiration'],
-        cvv:parsedJson['cvv'],
+      type:type,
+      number:parsedJson['number'],
+      expiration: parsedJson['expiration'],
+      cvv:parsedJson['cvv'],
     );
   }
 }
