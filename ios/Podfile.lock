@@ -212,6 +212,10 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
+  - Amplitude (7.2.0)
+  - amplitude_flutter (0.0.1):
+    - Amplitude (= 7.2.0)
+    - Flutter
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -395,6 +399,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - amplitude_flutter (from `.symlinks/plugins/amplitude_flutter/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - device_id (from `.symlinks/plugins/device_id/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -412,6 +417,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - abseil
+    - Amplitude
     - BoringSSL-GRPC
     - Firebase
     - FirebaseAnalytics
@@ -438,6 +444,8 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
+  amplitude_flutter:
+    :path: ".symlinks/plugins/amplitude_flutter/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   device_id:
@@ -467,6 +475,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
+  Amplitude: c948c6f99c7f798c196523b2a5584367401d910f
+  amplitude_flutter: 5c934cf8331619b62bbd5a69f3cfea9090b3ca94
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   cloud_firestore: b054ccc068b5907645c32b669d38e82db2a11fc7
   device_id: 4a0bf078741a3eec6ba0e6cc72e786395d5991b0
@@ -505,6 +515,6 @@ SPEC CHECKSUMS:
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
-PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.9.3

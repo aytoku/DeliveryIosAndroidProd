@@ -74,6 +74,9 @@ class OrdersStoryModelItem{
     if(parsedJson['products_data'] != null){
       store  = Records.fromJson(parsedJson['products_data']['store']);
       store.destination_points = routesList;
+      if(routesList.length > 1){
+        routesList.removeAt(1);
+      }
       var products_list = parsedJson['products_data']['products'] as List;
       if(products_list != null){
         productsList = products_list.map((i) =>
