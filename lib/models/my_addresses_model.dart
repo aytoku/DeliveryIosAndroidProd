@@ -46,7 +46,7 @@ class MyFavouriteAddressesModel{
     var response = await http.post(url, body: jsonRequest, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
-      'Source':'ios_client_app_1',
+      'Source':'faem_food',
       'Authorization':'Bearer ' + authCodeData.token
     });
     if (response.statusCode == 200) {
@@ -70,7 +70,7 @@ class MyFavouriteAddressesModel{
     var response = await http.put(url, body: jsonRequest, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
-      'Source':'ios_client_app_1',
+      'Source':'faem_food',
       'Authorization':'Bearer ' + authCodeData.token
     });
     if (response.statusCode == 200) {
@@ -90,7 +90,7 @@ class MyFavouriteAddressesModel{
     var response = await http.delete(url, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
-      'Source':'ios_client_app_1',
+      'Source':'faem_food',
       'Authorization':'Bearer ' + authCodeData.token
     });
     if (response.statusCode == 200) {
@@ -108,7 +108,7 @@ class MyFavouriteAddressesModel{
     var response = await http.get(url, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
-      'Source':'ios_client_app_1',
+      'Source':'faem_food',
       'Authorization':'Bearer ' + authCodeData.token
     });
     var jsonResponse;

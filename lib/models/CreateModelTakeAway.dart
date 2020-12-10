@@ -60,7 +60,7 @@ class CreateOrderTakeAway {
     }), headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Accept': 'application/json',
-      'Source':'ios_client_app_1',
+      'Source':'faem_food',
       'Authorization':'Bearer ' + authCodeData.token
     });
     if (response.statusCode == 200) {
@@ -70,7 +70,7 @@ class CreateOrderTakeAway {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
             'Accept': 'application/json',
-            'Source':'ios_client_app_1',
+            'Source':'faem_food',
             'Authorization':'Bearer ' + authCodeData.token
           });
       print(suka.body);
